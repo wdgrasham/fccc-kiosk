@@ -510,7 +510,7 @@
       </div>
       <div class="tile" onclick="go('map')">
         <div class="tile-media">
-          <img src="Building.png" alt="First Colony building map" />
+          <img src="map-1st.png" alt="First Colony building map" />
           <span class="tile-pill">Navigate</span>
         </div>
         <div class="tile-body">
@@ -932,6 +932,7 @@
     <div class="controls">
       <button class="btn secondary" onclick="goBack()"><span class="arrow">&larr;</span> Back</button>
       <button class="btn ghost" onclick="goHome()">Home</button>
+      <button class="btn ghost" onclick="resetMapView()">Reset View</button>
       <button class="btn ghost" id="floor2Toggle" onclick="toggleFloor2()">Show 2nd Floor</button>
     </div>
     <div class="section-head" style="display:flex; justify-content:space-between; align-items:flex-end; gap:16px;">
@@ -956,22 +957,23 @@
         </div>
       </aside>
 
-      <!-- Map on RIGHT: Building.png is 8864 x 4480 landscape. -->
+      <!-- Map on RIGHT: map-1st.png is the 1st-floor view (5234 x 4246).
+           A 2nd-floor image will layer on top when Dan provides it. -->
       <div class="map-wrap">
         <div class="map-viewport">
-          <svg id="buildingMap" viewBox="0 0 8864 4480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-            <image href="Building.png" x="0" y="0" width="8864" height="4480" preserveAspectRatio="xMidYMid meet"/>
+          <svg id="buildingMap" viewBox="0 0 5234 4246" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            <image href="map-1st.png" x="0" y="0" width="5234" height="4246" preserveAspectRatio="xMidYMid meet"/>
 
             <!-- 2nd Floor overlay — hidden by default, toggled on via "Show 2nd Floor" button.
-                 Zones/art will be added once Dan provides the 2nd-floor layout. -->
+                 Non-functional until Dan drops in the 2nd-floor image/zones. -->
             <g id="floor2Overlay"></g>
 
             <!-- YOU ARE HERE marker — position set by positionYouAreHere().
-                 Coords are approximate for the new landscape image; Dan will tune. -->
+                 Coords are approximate for map-1st.png; Dan will tune. -->
             <g id="youAreHere" class="you-here-pulse">
-              <circle cx="1500" cy="2800" r="140" fill="#9d1c30" stroke="#fff" stroke-width="18"/>
-              <text x="1500" y="2855" text-anchor="middle" font-size="150" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
-              <text x="1500" y="3050" text-anchor="middle" font-size="90" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
+              <circle cx="1200" cy="2400" r="110" fill="#9d1c30" stroke="#fff" stroke-width="14"/>
+              <text x="1200" y="2443" text-anchor="middle" font-size="115" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
+              <text x="1200" y="2600" text-anchor="middle" font-size="72" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
             </g>
           </svg>
         </div>
@@ -1218,28 +1220,46 @@ function positionYouAreHere() {
   const circle = g.querySelector('circle');
   const kText = g.querySelector('text:nth-of-type(1)');
   const label = g.querySelector('text:nth-of-type(2)');
-  // Coords are in the Building.png coordinate space (8864 x 4480 landscape).
-  // These are approximate — Dan will tune once the map is on-screen.
+  // Coords in map-1st.png coordinate space (5234 x 4246). Placeholder values —
+  // Dan will tune once the map is on-screen.
   let cx, cy;
   if (KIOSK_LOCATION === 'childrens-wing') {
-    cx = 4200; cy = 2100;   // placeholder — tune to actual A/B corridor spot
+    cx = 3000; cy = 1800;   // placeholder — tune to actual A/B corridor spot
   } else {
-    cx = 1500; cy = 2800;   // placeholder — tune to south main entrance
+    cx = 1200; cy = 2400;   // placeholder — tune to south main entrance
   }
   circle.setAttribute('cx', cx);
   circle.setAttribute('cy', cy);
   kText.setAttribute('x', cx);
-  kText.setAttribute('y', cy + 55);
+  kText.setAttribute('y', cy + 43);
   label.setAttribute('x', cx);
-  label.setAttribute('y', cy + 250);
+  label.setAttribute('y', cy + 200);
 }
 
-/* Toggle the 2nd-floor overlay layer. Button label flips. */
+/* Toggle the 2nd-floor overlay layer. Non-functional until Dan provides
+   the 2nd-floor image/zones; button label flips either way. */
 function toggleFloor2() {
   const layer = document.getElementById('floor2Overlay');
   const btn = document.getElementById('floor2Toggle');
   const on = layer.classList.toggle('visible');
   btn.textContent = on ? 'Hide 2nd Floor' : 'Show 2nd Floor';
+  resetIdle();
+}
+
+/* Reset the map view to its initial state: clear any wing-specific
+   sidebar info and hide the 2nd-floor overlay. */
+function resetMapView() {
+  const info = document.getElementById('wingInfo');
+  if (info) {
+    info.innerHTML = '<h3>Building Map</h3>' +
+      '<p class="muted">Tap a class to see where to go, or scan the QR to take the map with you.</p>';
+  }
+  const layer = document.getElementById('floor2Overlay');
+  const btn = document.getElementById('floor2Toggle');
+  if (layer && layer.classList.contains('visible')) {
+    layer.classList.remove('visible');
+    if (btn) btn.textContent = 'Show 2nd Floor';
+  }
   resetIdle();
 }
 
