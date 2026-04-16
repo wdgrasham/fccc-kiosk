@@ -95,12 +95,13 @@
 </header>
 
 <div class="map-container">
-  <svg viewBox="0 0 5234 4246" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-    <image href="map-1st.png" x="0" y="0" width="5234" height="4246"/>
+  <svg viewBox="0 0 5234 3900" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <image href="map-1st.png" x="0" y="0" width="5234" height="3900"/>
     <g id="youAreHere" class="you-here-pulse">
-      <circle id="yahCircle" cx="1200" cy="2400" r="110" fill="#9d1c30" stroke="#fff" stroke-width="14"/>
-      <text id="yahK" x="1200" y="2443" text-anchor="middle" font-size="115" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
-      <text id="yahLabel" x="1200" y="2600" text-anchor="middle" font-size="72" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
+      <!-- "YOU ARE HERE" label sits ABOVE the K circle. -->
+      <text id="yahLabel" x="2300" y="2830" text-anchor="middle" font-size="72" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
+      <circle id="yahCircle" cx="2300" cy="3000" r="110" fill="#9d1c30" stroke="#fff" stroke-width="14"/>
+      <text id="yahK" x="2300" y="3043" text-anchor="middle" font-size="115" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
     </g>
   </svg>
 </div>
@@ -115,11 +116,11 @@
 const params = new URLSearchParams(location.search);
 const loc = params.get('loc') || 'lobby';
 
-// Coords in map-1st.png coordinate space (5234 x 4246). Placeholder — Dan
-// will tune once the map is on-screen.
+// Coords in map-1st.png coordinate space (5234 x 3900).
+// Lobby: (2300, 3000). Children's wing is a placeholder until Dan tunes.
 const positions = {
-  lobby:            { cx: 1200, cy: 2400, label: 'Lobby (South Entrance)' },
-  'childrens-wing': { cx: 3000, cy: 1800, label: "Children's Wing" }
+  lobby:            { cx: 2300, cy: 3000, label: 'Lobby (South Entrance)' },
+  'childrens-wing': { cx: 3000, cy: 1600, label: "Children's Wing" }
 };
 
 const pos = positions[loc] || positions.lobby;
@@ -128,8 +129,9 @@ document.getElementById('yahCircle').setAttribute('cx', pos.cx);
 document.getElementById('yahCircle').setAttribute('cy', pos.cy);
 document.getElementById('yahK').setAttribute('x', pos.cx);
 document.getElementById('yahK').setAttribute('y', pos.cy + 43);
+// Label sits ABOVE the circle.
 document.getElementById('yahLabel').setAttribute('x', pos.cx);
-document.getElementById('yahLabel').setAttribute('y', pos.cy + 200);
+document.getElementById('yahLabel').setAttribute('y', pos.cy - 170);
 document.getElementById('locLabel').textContent = pos.label;
 </script>
 </body>

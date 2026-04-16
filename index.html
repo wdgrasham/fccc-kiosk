@@ -444,7 +444,7 @@
      so percentage-positioned overlays line up exactly with the image. */
   .map-frame {
     position: relative;
-    aspect-ratio: 5234 / 4246;
+    aspect-ratio: 5234 / 3900;
   }
   .map-layer {
     position: absolute;
@@ -472,6 +472,19 @@
     pointer-events: none;
     z-index: 3;
   }
+  /* "YOU ARE HERE" label sits ABOVE the K circle. */
+  .you-here__label {
+    background: #fff;
+    color: var(--accent-red);
+    font-weight: 700;
+    font-family: "Open Sans";
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+  }
   .you-here__dot {
     width: 48px; height: 48px;
     background: var(--accent-red);
@@ -485,56 +498,45 @@
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
     animation: pulse 1.6s ease-in-out infinite;
   }
-  .you-here__label {
-    background: #fff;
-    color: var(--accent-red);
-    font-weight: 700;
-    font-family: "Open Sans";
-    font-size: 11px;
-    letter-spacing: 0.5px;
-    padding: 3px 8px;
-    border-radius: 4px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    white-space: nowrap;
-  }
   @keyframes pulse {
     0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3); }
     50%      { transform: scale(1.08); box-shadow: 0 4px 18px rgba(157, 28, 48, 0.5); }
   }
 
-  /* HTML Map Legend — overlays top-right of the map, never blurs. */
+  /* HTML Map Legend — overlays top-right of the map, never blurs.
+     Sized ~2x the original for kiosk readability. */
   .map-legend {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 20px;
+    right: 20px;
     background: rgba(255, 255, 255, 0.96);
     border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 12px 14px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     z-index: 4;
-    min-width: 160px;
-    max-width: 220px;
+    min-width: 320px;
+    max-width: 440px;
   }
   .map-legend__title {
     font-family: "Alfa Slab One", Georgia, serif;
-    font-size: 13px;
+    font-size: 26px;
     color: var(--deep-teal);
-    margin-bottom: 6px;
+    margin-bottom: 12px;
     letter-spacing: 0.3px;
   }
-  .map-legend__list { display: grid; gap: 3px; }
+  .map-legend__list { display: grid; gap: 6px; }
   .map-legend__item {
-    font-size: 12px;
+    font-size: 22px;
     color: var(--gray);
-    line-height: 1.3;
-    display: flex; gap: 8px;
+    line-height: 1.35;
+    display: flex; gap: 16px;
   }
   .map-legend__abbr {
     font-family: "Open Sans";
     font-weight: 700;
     color: var(--deep-teal);
-    min-width: 34px;
+    min-width: 68px;
   }
   .wing-class-list {
     display: flex; flex-direction: column; gap: 8px;
@@ -1057,11 +1059,11 @@
           <img class="map-layer map-layer--1st" src="map-1st.png" alt="First Colony 1st floor map"/>
           <img class="map-layer map-layer--2nd" src="map-2nd.png" alt="First Colony 2nd floor overlay"/>
 
-          <!-- Lobby kiosk You Are Here: pixel (2258, 3410) in 5234x4246 image
-               = 43.1% left, 80.3% top. positionYouAreHere() writes these. -->
+          <!-- Lobby kiosk You Are Here: pixel (2300, 3000) in 5234x3900 image
+               = 43.9% left, 76.9% top. positionYouAreHere() writes these. -->
           <div class="you-here" id="youHere">
-            <div class="you-here__dot">K</div>
             <div class="you-here__label">YOU ARE HERE</div>
+            <div class="you-here__dot">K</div>
           </div>
         </div>
 
@@ -1327,12 +1329,12 @@ function renderMapPhoneQR() {
 function positionYouAreHere() {
   const el = document.getElementById('youHere');
   if (!el) return;
-  const IMG_W = 5234, IMG_H = 4246;
+  const IMG_W = 5234, IMG_H = 3900;
   let px, py;
   if (KIOSK_LOCATION === 'childrens-wing') {
-    px = 3000; py = 1800;   // placeholder — tune to A/B corridor spot
+    px = 3000; py = 1600;   // placeholder — tune to A/B corridor spot
   } else {
-    px = 2258; py = 3410;   // Lobby kiosk — south main entrance
+    px = 2300; py = 3000;   // Lobby kiosk — south main entrance (43.9% / 76.9%)
   }
   el.style.left = (px / IMG_W * 100).toFixed(3) + '%';
   el.style.top  = (py / IMG_H * 100).toFixed(3) + '%';
@@ -1351,7 +1353,7 @@ function fitMapFrame() {
   const sw = stage.clientWidth - padX;
   const sh = stage.clientHeight - padY;
   if (sw <= 0 || sh <= 0) return;
-  const aspect = 5234 / 4246;
+  const aspect = 5234 / 3900;
   let w, h;
   if (sw / sh > aspect) { h = sh; w = h * aspect; }
   else                  { w = sw; h = w / aspect; }
