@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<title>Building Map — First Colony Church of Christ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --deep-teal: #002f3b;
+    --bright-teal: #008c95;
+    --bright-aqua: #43beac;
+    --accent-red: #9d1c30;
+    --gray: #808285;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    font-family: "Open Sans", system-ui, sans-serif;
+    color: var(--deep-teal);
+    background: #f4f7f8;
+  }
+  header {
+    background: var(--deep-teal);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  header img {
+    height: 28px;
+    width: auto;
+    filter: brightness(0) invert(1);
+  }
+  .loc-chip {
+    background: var(--bright-aqua);
+    color: var(--deep-teal);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .loc-chip .dot {
+    width: 8px; height: 8px;
+    background: var(--accent-red);
+    border-radius: 50%;
+  }
+  .map-container {
+    width: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pinch-zoom pan-x pan-y;
+    background: #fff;
+  }
+  .map-container svg {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .you-here-pulse {
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .footer {
+    padding: 14px 16px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.4;
+  }
+  .footer a {
+    color: var(--bright-teal);
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.svg" alt="First Colony Church of Christ">
+  <div class="loc-chip"><span class="dot"></span><span id="locLabel">Building Map</span></div>
+</header>
+
+<div class="map-container">
+  <svg viewBox="0 0 2880 3888" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <image href="map.png" x="0" y="0" width="2880" height="3888"/>
+    <g id="youAreHere" class="you-here-pulse">
+      <circle id="yahCircle" cx="470" cy="1120" r="70" fill="#9d1c30" stroke="#fff" stroke-width="10"/>
+      <text id="yahK" x="470" y="1148" text-anchor="middle" font-size="72" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
+      <text id="yahLabel" x="470" y="1260" text-anchor="middle" font-size="44" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
+    </g>
+  </svg>
+</div>
+
+<div class="footer">
+  <strong>First Colony Church of Christ</strong><br>
+  2140 First Colony Blvd, Sugar Land, TX 77479<br>
+  <a href="https://www.firstcolonychurch.org">firstcolonychurch.org</a>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const loc = params.get('loc') || 'lobby';
+
+const positions = {
+  lobby:            { cx: 470,  cy: 1120, label: 'Lobby (South Entrance)' },
+  'childrens-wing': { cx: 1290, cy: 1560, label: "Children's Wing" }
+};
+
+const pos = positions[loc] || positions.lobby;
+
+document.getElementById('yahCircle').setAttribute('cx', pos.cx);
+document.getElementById('yahCircle').setAttribute('cy', pos.cy);
+document.getElementById('yahK').setAttribute('x', pos.cx);
+document.getElementById('yahK').setAttribute('y', pos.cy + 28);
+document.getElementById('yahLabel').setAttribute('x', pos.cx);
+document.getElementById('yahLabel').setAttribute('y', pos.cy + 140);
+document.getElementById('locLabel').textContent = pos.label;
+</script>
+</body>
+</html>

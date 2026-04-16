@@ -984,9 +984,9 @@
           <p class="muted">Rooms and classes meeting today will appear here.</p>
         </div>
         <div class="qr-block">
-          <div class="qr-code" data-qr-dynamic="true"></div>
+          <div class="qr-code" id="mapPhoneQR"></div>
           <div class="qr-label">Take this map with you</div>
-          <div class="qr-hint">Scan to continue on your phone.</div>
+          <div class="qr-hint">Scan to open on your phone.</div>
         </div>
       </aside>
     </div>
@@ -1042,13 +1042,11 @@ function setScreen(name) {
     document.getElementById('screen-home').classList.add('active');
     currentScreen = 'home';
   }
-  // Keep URL hash in sync so the map QR's dynamic URL lands visitors on the same screen.
   if (currentScreen === 'home') {
     if (location.hash) history.replaceState(null, '', location.pathname + location.search);
   } else if (location.hash !== '#' + currentScreen) {
     history.replaceState(null, '', '#' + currentScreen);
   }
-  refreshDynamicQRs();
   window.scrollTo({ top: 0, behavior: 'auto' });
   resetIdle();
 }
@@ -1185,22 +1183,22 @@ document.addEventListener('DOMContentLoaded', () => {
     KIOSK_LOCATION === 'childrens-wing' ? "Children's Wing" : 'Lobby (Main Entrance)';
 
   renderStaticQRs();
+  renderMapPhoneQR();
 
   // If someone scanned a QR and landed on #map (or any screen), jump there.
   const initial = (location.hash || '').replace(/^#/, '');
   if (initial && document.getElementById('screen-' + initial)) {
     go(initial);
-  } else {
-    refreshDynamicQRs();
   }
 
   resetIdle();
 });
 
 /* ----- QR code rendering -----
-   Static QRs have data-qr="<url>" and are rendered once.
-   Dynamic QRs have data-qr-dynamic="true" and re-render on each screen change
-   so the encoded URL points to the current kiosk screen. */
+   Static QRs have data-qr="<url>" and are rendered once on load.
+   The Building Map QR is rendered by renderMapPhoneQR() and points to
+   map-phone.html?loc=KIOSK_LOCATION so the visitor's phone opens a
+   standalone mobile map viewer with the correct You-Are-Here marker. */
 function buildQRSvg(url) {
   // typeNumber 0 = auto, error correction 'M' = ~15% recovery.
   const qr = qrcode(0, 'M');
@@ -1215,12 +1213,13 @@ function renderStaticQRs() {
     catch (e) { el.textContent = 'QR error'; console.error('QR render failed for', url, e); }
   });
 }
-function refreshDynamicQRs() {
-  const url = location.href;
-  document.querySelectorAll('.qr-code[data-qr-dynamic="true"]').forEach(el => {
-    try { el.innerHTML = buildQRSvg(url); }
-    catch (e) { el.textContent = 'QR error'; console.error('Dynamic QR failed', e); }
-  });
+function renderMapPhoneQR() {
+  const el = document.getElementById('mapPhoneQR');
+  if (!el) return;
+  const base = location.origin + location.pathname.replace(/[^/]*$/, '');
+  const url = base + 'map-phone.html?loc=' + encodeURIComponent(KIOSK_LOCATION);
+  try { el.innerHTML = buildQRSvg(url); }
+  catch (e) { el.textContent = 'QR error'; console.error('Map phone QR failed', e); }
 }
 
 /* ----- You Are Here placement -----
