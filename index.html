@@ -31,8 +31,10 @@
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   html, body {
     height: 100%;
+    width: 100%;
+    overflow: hidden; /* kiosk never scrolls */
     font-family: "Open Sans", system-ui, Arial, sans-serif;
-    font-size: 18px;
+    font-size: 17px;
     color: var(--deep-teal);
     background: var(--bg);
     overscroll-behavior: none;
@@ -40,20 +42,21 @@
     user-select: none;
   }
   h1, h2, h3, h4 { font-family: "Alfa Slab One", Georgia, serif; font-weight: 400; letter-spacing: 0.3px; }
-  h1 { font-size: 48px; color: var(--deep-teal); }
-  h2 { font-size: 36px; color: var(--deep-teal); }
-  h3 { font-size: 24px; color: var(--classic-teal); }
-  h4 { font-size: 20px; color: var(--deep-teal); }
-  p { line-height: 1.55; }
+  h1 { font-size: 44px; color: var(--deep-teal); }
+  h2 { font-size: 30px; color: var(--deep-teal); line-height: 1.1; }
+  h3 { font-size: 22px; color: var(--classic-teal); line-height: 1.15; }
+  h4 { font-size: 18px; color: var(--deep-teal); line-height: 1.2; }
+  p { line-height: 1.5; }
 
-  /* Root app container */
-  #app { min-height: 100vh; display: flex; flex-direction: column; }
+  /* Root app container — locked to viewport, no scroll */
+  #app { height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; }
 
   /* Top bar — minimal, no website nav */
   .topbar {
+    flex: 0 0 auto;
     background: var(--deep-teal);
     color: #fff;
-    padding: 18px 32px;
+    padding: 12px 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -61,34 +64,39 @@
   }
   .brand-block { display: flex; align-items: center; gap: 16px; }
   .brand-logo {
-    width: 56px; height: 56px; border-radius: 8px;
+    width: 44px; height: 44px; border-radius: 6px;
     background: #fff;
     display: flex; align-items: center; justify-content: center;
-    font-family: "Alfa Slab One"; color: var(--deep-teal); font-size: 22px;
+    font-family: "Alfa Slab One"; color: var(--deep-teal); font-size: 18px;
   }
-  .brand-name { font-family: "Alfa Slab One"; font-size: 22px; color: #fff; line-height: 1.1; }
-  .brand-sub { font-size: 13px; opacity: 0.75; letter-spacing: 0.4px; text-transform: uppercase; }
+  .brand-name { font-family: "Alfa Slab One"; font-size: 18px; color: #fff; line-height: 1.1; }
+  .brand-sub { font-size: 11px; opacity: 0.75; letter-spacing: 0.4px; text-transform: uppercase; }
   .topbar-right { display: flex; align-items: center; gap: 12px; font-size: 14px; opacity: 0.85; }
 
-  /* Screen system */
+  /* Screen system — every screen locked to available viewport area, no scroll */
   .screen {
     display: none;
-    flex: 1;
-    padding: 40px 48px 48px;
-    animation: fade 0.25s ease-out;
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 20px 32px 20px;
+    animation: fade 0.2s ease-out;
+    overflow: hidden;
+    flex-direction: column;
   }
-  .screen.active { display: block; }
+  .screen.active { display: flex; }
   @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .screen-body { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 
   /* Back/Home controls */
   .controls {
-    display: flex; gap: 14px; margin-bottom: 28px;
+    display: flex; gap: 12px; margin-bottom: 16px;
+    flex: 0 0 auto;
   }
   .btn {
     font-family: "Open Sans"; font-weight: 600;
-    font-size: 17px;
-    padding: 14px 24px;
-    min-height: 56px;
+    font-size: 15px;
+    padding: 10px 20px;
+    min-height: 48px;
     border-radius: 999px;
     border: 2px solid transparent;
     background: var(--bright-teal);
@@ -98,6 +106,7 @@
     transition: transform 0.08s ease, background 0.15s ease, box-shadow 0.15s ease;
     box-shadow: var(--shadow);
   }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
   .btn:active { transform: scale(0.97); }
   .btn.secondary { background: #fff; color: var(--deep-teal); border-color: var(--deep-teal); }
   .btn.ghost { background: transparent; color: var(--deep-teal); border-color: rgba(0,47,59,0.2); box-shadow: none; }
@@ -105,31 +114,32 @@
   .btn .arrow { font-size: 20px; line-height: 1; }
 
   /* ============ HOME SCREEN ============ */
+  #screen-home { justify-content: center; align-items: center; padding: 16px 32px; }
   .hero {
     text-align: center;
-    margin-bottom: 36px;
-    padding: 18px 0 8px;
+    margin-bottom: 20px;
+    flex: 0 0 auto;
   }
-  .hero .welcome { font-family: "Alfa Slab One"; font-size: 56px; color: var(--deep-teal); line-height: 1; }
+  .hero .welcome { font-family: "Alfa Slab One"; font-size: 44px; color: var(--deep-teal); line-height: 1; }
   .hero .welcome .accent { color: var(--bright-teal); }
-  .hero .sub { margin-top: 10px; font-size: 20px; color: var(--classic-teal); font-weight: 400; letter-spacing: 0.5px; }
+  .hero .sub { margin-top: 8px; font-size: 17px; color: var(--classic-teal); font-weight: 400; letter-spacing: 0.5px; }
 
   .home-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
-    max-width: 1100px;
-    margin: 0 auto;
+    gap: 20px;
+    max-width: 1000px;
+    width: 100%;
   }
   .tile {
     background: var(--surface);
-    border-radius: 20px;
-    padding: 36px 32px;
-    min-height: 220px;
+    border-radius: 18px;
+    padding: 24px 28px;
+    min-height: 180px;
     cursor: pointer;
     box-shadow: var(--shadow);
     border: 2px solid transparent;
-    display: flex; flex-direction: column; justify-content: space-between; gap: 18px;
+    display: flex; flex-direction: column; justify-content: space-between; gap: 14px;
     transition: transform 0.12s ease, box-shadow 0.15s ease, border-color 0.15s ease;
     position: relative;
     overflow: hidden;
@@ -137,41 +147,40 @@
   .tile:active { transform: scale(0.985); }
   .tile:hover { box-shadow: var(--shadow-lg); border-color: var(--bright-aqua); }
   .tile .tile-icon {
-    width: 72px; height: 72px;
-    border-radius: 16px;
+    width: 60px; height: 60px;
+    border-radius: 14px;
     background: var(--bright-aqua);
     color: var(--deep-teal);
     display: flex; align-items: center; justify-content: center;
-    font-size: 36px;
+    font-size: 30px;
   }
   .tile.teal .tile-icon { background: var(--bright-teal); color: #fff; }
   .tile.aqua .tile-icon { background: var(--bright-aqua); color: var(--deep-teal); }
   .tile.deep .tile-icon { background: var(--deep-teal); color: #fff; }
   .tile.red .tile-icon { background: var(--accent-red); color: #fff; }
-  .tile-title { font-family: "Alfa Slab One"; font-size: 30px; color: var(--deep-teal); line-height: 1.1; }
-  .tile-body { font-size: 15px; color: var(--gray); line-height: 1.45; }
-  .tile-cta { align-self: flex-start; font-weight: 600; color: var(--bright-teal); font-size: 16px; }
+  .tile-title { font-family: "Alfa Slab One"; font-size: 26px; color: var(--deep-teal); line-height: 1.1; }
+  .tile-body { font-size: 14px; color: var(--gray); line-height: 1.45; }
+  .tile-cta { align-self: flex-start; font-weight: 600; color: var(--bright-teal); font-size: 14px; }
 
   /* ============ SECTION HEADER (sub screens) ============ */
-  .section-head {
-    margin-bottom: 20px;
-  }
-  .section-head h2 { margin-bottom: 6px; }
-  .section-head .lede { font-size: 17px; color: var(--gray); max-width: 720px; }
+  .section-head { margin-bottom: 14px; flex: 0 0 auto; }
+  .section-head h2 { margin-bottom: 4px; }
+  .section-head .lede { font-size: 15px; color: var(--gray); max-width: 720px; }
 
   /* ============ CARD GRID (generic) ============ */
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+    align-content: start;
   }
   .card {
     background: #fff;
     border-radius: 12px;
-    padding: 22px;
+    padding: 16px 18px;
     box-shadow: var(--shadow);
     border-left: 6px solid var(--bright-teal);
-    display: flex; flex-direction: column; gap: 10px;
+    display: flex; flex-direction: column; gap: 8px;
     cursor: pointer;
     transition: transform 0.1s ease, box-shadow 0.15s ease;
   }
@@ -187,9 +196,9 @@
     border-radius: 6px;
     text-transform: uppercase;
   }
-  .card h4 { color: var(--deep-teal); }
-  .card .desc { font-size: 15px; color: #3c4a50; line-height: 1.5; }
-  .card .teachers { font-size: 13px; color: var(--gray); font-style: italic; }
+  .card h4 { color: var(--deep-teal); font-size: 17px; }
+  .card .desc { font-size: 13px; color: #3c4a50; line-height: 1.4; }
+  .card .teachers { font-size: 12px; color: var(--gray); font-style: italic; }
   .card .badge {
     align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
     text-transform: uppercase; padding: 4px 10px; border-radius: 999px;
@@ -213,36 +222,52 @@
 
   /* Subgroup header inside a category page */
   .subgroup-title {
-    font-family: "Alfa Slab One"; font-size: 22px; color: var(--classic-teal);
-    margin: 28px 0 12px; letter-spacing: 0.3px;
+    font-family: "Alfa Slab One"; font-size: 18px; color: var(--classic-teal);
+    margin: 14px 0 8px; letter-spacing: 0.3px;
+    flex: 0 0 auto;
   }
-  .subgroup-title:first-of-type { margin-top: 8px; }
+  .subgroup-title:first-of-type { margin-top: 4px; }
+
+  /* ============ PAGINATION ============ */
+  .paginator {
+    flex: 0 0 auto;
+    margin-top: 14px;
+    display: flex; justify-content: center; align-items: center;
+    gap: 16px;
+  }
+  .paginator .page-indicator {
+    font-weight: 700; color: var(--deep-teal); font-size: 15px;
+    min-width: 100px; text-align: center;
+  }
+  .paginator .btn { min-width: 140px; justify-content: center; }
+  .paginated { flex: 1 1 auto; min-height: 0; overflow: hidden; }
 
   /* ============ CATEGORY HUB (two big buttons for Sunday/Wednesday) ============ */
   .hub-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
     max-width: 900px;
+    align-content: start;
   }
   .hub-card {
     background: #fff;
-    border-radius: 16px;
-    padding: 28px;
+    border-radius: 14px;
+    padding: 20px 22px;
     box-shadow: var(--shadow);
     border: 2px solid transparent;
     cursor: pointer;
-    display: flex; flex-direction: column; gap: 10px;
+    display: flex; flex-direction: column; gap: 6px;
     transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   }
   .hub-card:hover { border-color: var(--bright-aqua); box-shadow: var(--shadow-lg); }
   .hub-card:active { transform: scale(0.98); }
   .hub-card .when {
-    font-size: 13px; font-weight: 700; letter-spacing: 0.8px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
     text-transform: uppercase; color: var(--bright-teal);
   }
-  .hub-card h3 { font-family: "Alfa Slab One"; font-size: 26px; color: var(--deep-teal); }
-  .hub-card p { font-size: 15px; color: var(--gray); }
+  .hub-card h3 { font-family: "Alfa Slab One"; font-size: 22px; color: var(--deep-teal); }
+  .hub-card p { font-size: 14px; color: var(--gray); }
 
   /* ============ QR Placeholder ============ */
   .qr-block {
@@ -257,16 +282,18 @@
     max-width: 260px;
   }
   .qr-code {
-    width: 200px; height: 200px;
+    width: 180px; height: 180px;
     background: #fff;
     border: 2px solid var(--deep-teal);
     border-radius: 10px;
-    padding: 8px;
+    padding: 6px;
     display: flex; align-items: center; justify-content: center;
+    flex: 0 0 auto;
   }
   .qr-code svg { width: 100%; height: 100%; display: block; }
-  .qr-block .qr-label { font-weight: 700; color: var(--deep-teal); font-size: 14px; text-align: center; }
-  .qr-block .qr-hint { font-size: 12px; color: var(--gray); text-align: center; line-height: 1.35; }
+  .qr-block { padding: 16px; max-width: 220px; }
+  .qr-block .qr-label { font-weight: 700; color: var(--deep-teal); font-size: 13px; text-align: center; }
+  .qr-block .qr-hint { font-size: 11px; color: var(--gray); text-align: center; line-height: 1.35; }
 
   .info-layout {
     display: grid;
@@ -277,9 +304,9 @@
   @media (max-width: 900px) {
     .info-layout { grid-template-columns: 1fr; }
   }
-  .info-block { background: #fff; border-radius: 14px; padding: 26px; box-shadow: var(--shadow); }
-  .info-block h3 { margin-bottom: 12px; }
-  .info-block p { font-size: 16px; color: #3c4a50; margin-bottom: 12px; }
+  .info-block { background: #fff; border-radius: 14px; padding: 20px 22px; box-shadow: var(--shadow); overflow: hidden; }
+  .info-block h3 { margin-bottom: 10px; }
+  .info-block p { font-size: 15px; color: #3c4a50; margin-bottom: 10px; }
   .info-block .room-line {
     display: inline-block;
     background: var(--deep-teal); color: #fff;
@@ -289,30 +316,29 @@
   }
 
   /* ============ BUILDING MAP ============ */
+  .map-layout {
+    flex: 1 1 auto; min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr minmax(240px, 300px);
+    gap: 16px;
+    overflow: hidden;
+  }
   .map-wrap {
     background: #fff;
-    border-radius: 16px;
-    padding: 20px;
+    border-radius: 14px;
+    padding: 10px;
     box-shadow: var(--shadow);
-    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
   }
-  .map-toolbar {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 14px; gap: 12px; flex-wrap: wrap;
-  }
-  .map-loc-chip {
-    background: var(--bright-aqua); color: var(--deep-teal);
-    padding: 8px 14px; border-radius: 999px;
-    font-weight: 700; font-size: 14px;
-    display: inline-flex; align-items: center; gap: 8px;
-  }
-  .map-loc-chip .dot { width: 10px; height: 10px; background: var(--deep-teal); border-radius: 50%; }
   .map-viewport {
+    flex: 1 1 auto;
+    min-height: 0;
     width: 100%;
     overflow: hidden;
     background: #fafcfd;
-    border-radius: 12px;
-    aspect-ratio: 1000 / 750;
+    border-radius: 10px;
   }
   #buildingMap {
     width: 100%;
@@ -320,47 +346,63 @@
     display: block;
     font-family: "Open Sans", sans-serif;
   }
-  .map-legend {
-    display: flex; flex-wrap: wrap; gap: 16px;
-    margin-top: 14px; font-size: 13px; color: var(--gray);
+  .map-loc-chip {
+    background: var(--bright-aqua); color: var(--deep-teal);
+    padding: 6px 12px; border-radius: 999px;
+    font-weight: 700; font-size: 13px;
+    display: inline-flex; align-items: center; gap: 8px;
+    white-space: nowrap;
   }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.1); }
-  .you-here-pulse { animation: pulse 1.6s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  .map-loc-chip .dot { width: 9px; height: 9px; background: var(--deep-teal); border-radius: 50%; }
+
+  /* Hotspots — invisible but tappable. Subtle highlight on hover/active. */
+  .hotspot {
+    fill: rgba(67, 190, 172, 0); /* transparent by default */
+    stroke: rgba(157, 28, 48, 0);
+    stroke-width: 6;
+    cursor: pointer;
+    transition: fill 0.15s, stroke 0.15s;
+  }
+  .hotspot:hover { fill: rgba(67, 190, 172, 0.22); stroke: rgba(10, 93, 103, 0.6); }
+  .hotspot.active { fill: rgba(157, 28, 48, 0.12); stroke: rgba(157, 28, 48, 0.9); }
+
+  .you-here-pulse { animation: pulse 1.6s ease-in-out infinite; }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.45; }
   }
 
   .map-side {
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: 1fr minmax(220px, 260px);
-    gap: 20px;
+    display: flex; flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+    overflow: hidden;
   }
-  @media (max-width: 900px) {
-    .map-side { grid-template-columns: 1fr; }
-  }
+  .map-side .qr-block { align-self: center; }
   .wing-info {
-    background: #fff; padding: 20px 24px; border-radius: 12px;
-    box-shadow: var(--shadow); min-height: 180px;
+    background: #fff; padding: 16px 18px; border-radius: 12px;
+    box-shadow: var(--shadow);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex; flex-direction: column;
   }
-  .wing-info h3 { margin-bottom: 8px; }
-  .wing-info .muted { color: var(--gray); font-size: 14px; }
-  .wing-class-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .wing-info h3 { margin-bottom: 6px; font-size: 19px; }
+  .wing-info .muted { color: var(--gray); font-size: 13px; }
+  .wing-class-list {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-top: 10px;
+    overflow-y: auto;
+    min-height: 0;
+  }
   .wing-class-row {
-    padding: 10px 12px;
+    padding: 8px 10px;
     background: #f4f9fa;
     border-left: 4px solid var(--bright-teal);
     border-radius: 6px;
-    font-size: 14px;
+    font-size: 13px;
   }
   .wing-class-row strong { color: var(--deep-teal); }
-
-  /* SVG wing hover styling */
-  .wing { cursor: pointer; transition: opacity 0.15s; }
-  .wing:hover { opacity: 0.75; }
-  .wing.active { stroke: var(--accent-red); stroke-width: 3; }
 
   /* Small Groups page */
   .stack { display: flex; flex-direction: column; gap: 18px; }
@@ -447,7 +489,8 @@
        ================================================= -->
   <section class="screen" id="screen-new-here">
     <div class="controls">
-      <button class="btn secondary" onclick="go('home')"><span class="arrow">←</span> Back to Home</button>
+      <button class="btn secondary" onclick="go('home')"><span class="arrow">←</span> Back</button>
+      <button class="btn ghost" onclick="go('home')">Home</button>
     </div>
     <div class="section-head">
       <h2>New Here?</h2>
@@ -526,7 +569,8 @@
        ================================================= -->
   <section class="screen" id="screen-volunteer">
     <div class="controls">
-      <button class="btn secondary" onclick="go('home')"><span class="arrow">←</span> Back to Home</button>
+      <button class="btn secondary" onclick="go('home')"><span class="arrow">←</span> Back</button>
+      <button class="btn ghost" onclick="go('home')">Home</button>
     </div>
     <div class="section-head">
       <h2>Volunteer</h2>
@@ -611,7 +655,8 @@
        ================================================= -->
   <section class="screen" id="screen-classes">
     <div class="controls">
-      <button class="btn secondary" onclick="go('home')"><span class="arrow">←</span> Back to Home</button>
+      <button class="btn secondary" onclick="go('home')"><span class="arrow">←</span> Back</button>
+      <button class="btn ghost" onclick="go('home')">Home</button>
     </div>
     <div class="section-head">
       <h2>Bible Classes</h2>
@@ -671,9 +716,11 @@
       <h2>Sunday · Adult Classes</h2>
       <p class="lede">9:45 AM · tap a class to find the room on the map.</p>
     </div>
-    <div id="sunday-adult-list"></div>
-    <div class="subgroup-title">Care Groups (meet monthly)</div>
-    <div id="sunday-care-list" class="card-grid"></div>
+    <div class="screen-body">
+      <div class="paginated" id="sunday-adult-list"></div>
+      <div class="subgroup-title">Care Groups (meet monthly)</div>
+      <div id="sunday-care-list" class="card-grid"></div>
+    </div>
   </section>
 
   <section class="screen" id="screen-classes-sunday-kids">
@@ -732,7 +779,31 @@
       <h2>Wednesday · Adult Classes</h2>
       <p class="lede">7:00 PM · tap a class to find the room on the map.</p>
     </div>
-    <div id="wed-adult-list"></div>
+    <div class="screen-body paginated" id="wed-adult-list"></div>
+  </section>
+
+  <section class="screen" id="screen-friendspeak">
+    <div class="controls">
+      <button class="btn secondary" onclick="go('classes-wed-adult')"><span class="arrow">←</span> Back</button>
+      <button class="btn ghost" onclick="go('home')">Home</button>
+    </div>
+    <div class="section-head">
+      <h2>FriendSpeak</h2>
+      <p class="lede">One-on-one English conversation pairs with guests from around the world. Training required before you begin.</p>
+    </div>
+    <div class="info-layout">
+      <div class="info-block">
+        <p><strong>Where:</strong> The Lobby & Room F-100 (Gym Wing)</p>
+        <p><strong>When:</strong> Wednesday evenings — three one-hour sessions: 6–7 PM, 7–8 PM, and 8–9 PM.</p>
+        <p><strong>Leaders:</strong> Grant Wright & Sarah Smith.</p>
+        <p style="margin-top:12px;">New volunteers take a short training before sitting down with a conversation partner. Scan the QR to sign up — our team will get you scheduled for the next training.</p>
+      </div>
+      <div class="qr-block">
+        <div class="qr-code" data-qr="https://www.firstcolonychurch.org/first-colony-friendspeak/"></div>
+        <div class="qr-label">FriendSpeak Training</div>
+        <div class="qr-hint">Scan to sign up for training.</div>
+      </div>
+    </div>
   </section>
 
   <section class="screen" id="screen-classes-wed-youth">
@@ -793,225 +864,62 @@
     </div>
   </section>
 
+
   <!-- =================================================
        BUILDING MAP
        ================================================= -->
   <section class="screen" id="screen-map">
     <div class="controls">
-      <button class="btn secondary" onclick="go('home')"><span class="arrow">←</span> Back to Home</button>
+      <button class="btn secondary" onclick="go('home')"><span class="arrow">&larr;</span> Back</button>
+      <button class="btn ghost" onclick="go('home')">Home</button>
       <button class="btn ghost" onclick="resetMapZoom()">Reset view</button>
     </div>
-    <div class="section-head">
-      <h2>Building Map</h2>
-      <p class="lede">Tap a wing to zoom in and see what's happening today.</p>
+    <div class="section-head" style="display:flex; justify-content:space-between; align-items:flex-end; gap:16px;">
+      <div>
+        <h2>Building Map</h2>
+        <p class="lede">Tap a wing to zoom in and see what's meeting today.</p>
+      </div>
+      <div class="map-loc-chip"><span class="dot"></span>You are here: <span id="kioskLocName">Lobby</span></div>
     </div>
 
-    <div class="map-wrap">
-      <div class="map-toolbar">
-        <div class="map-loc-chip"><span class="dot"></span> You are here: <span id="kioskLocName">Lobby</span></div>
-        <div style="font-size: 13px; color: var(--gray);">Tap any wing · tap Reset view to zoom out</div>
+    <div class="map-layout">
+      <div class="map-wrap">
+        <div class="map-viewport">
+          <svg id="buildingMap" viewBox="0 0 2880 3888" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            <image href="map.png" x="0" y="0" width="2880" height="3888" preserveAspectRatio="xMidYMid meet"/>
+
+            <!-- Transparent click hotspots (coords in 2880x3888 PNG space). -->
+            <rect class="hotspot" data-wing="gym"         x="380"  y="110"  width="1100" height="780"  onclick="focusWing('gym')"/>
+            <rect class="hotspot" data-wing="lobby"       x="430"  y="890"  width="1050" height="600"  onclick="focusWing('lobby')"/>
+            <rect class="hotspot" data-wing="worship"     x="230"  y="1400" width="1280" height="800"  onclick="focusWing('worship')"/>
+            <rect class="hotspot" data-wing="secondfloor" x="80"   y="2200" width="1420" height="430"  onclick="focusWing('secondfloor')"/>
+            <rect class="hotspot" data-wing="b"           x="1440" y="80"   width="650"  height="1040" onclick="focusWing('b')"/>
+            <rect class="hotspot" data-wing="b"           x="1540" y="1120" width="750"  height="1020" onclick="focusWing('b')"/>
+            <rect class="hotspot" data-wing="a"           x="1540" y="2140" width="750"  height="900"  onclick="focusWing('a')"/>
+            <rect class="hotspot" data-wing="c"           x="1960" y="1810" width="800"  height="1090" onclick="focusWing('c')"/>
+            <rect class="hotspot" data-wing="d"           x="2060" y="2900" width="780"  height="900"  onclick="focusWing('d')"/>
+
+            <!-- YOU ARE HERE marker — position set by positionYouAreHere() -->
+            <g id="youAreHere" class="you-here-pulse">
+              <circle cx="470" cy="1120" r="70" fill="#9d1c30" stroke="#fff" stroke-width="10"/>
+              <text x="470" y="1150" text-anchor="middle" font-size="72" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
+              <text x="470" y="1260" text-anchor="middle" font-size="44" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
+            </g>
+          </svg>
+        </div>
       </div>
 
-      <div class="map-viewport">
-        <svg id="buildingMap" viewBox="0 0 1000 750" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
-              <polygon points="0 0, 10 4, 0 8" fill="#008c95"/>
-            </marker>
-          </defs>
-
-          <rect width="1000" height="750" fill="#fafcfd"/>
-
-          <!-- GYM WING (top-left) -->
-          <g class="wing" data-wing="gym" onclick="focusWing('gym')">
-            <rect x="40" y="40" width="280" height="220" rx="8" fill="#e6f3f4" stroke="#0a5d67" stroke-width="2"/>
-            <text x="180" y="70" text-anchor="middle" font-size="18" font-weight="700" fill="#002f3b">THE GYM WING</text>
-            <text x="180" y="88" text-anchor="middle" font-size="11" fill="#0a5d67">F-100 to F-112 · Chapel · Kitchen</text>
-
-            <rect x="55" y="180" width="60" height="40" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="85" y="205" text-anchor="middle" font-size="11" font-weight="600" fill="#002f3b">F-100</text>
-            <rect x="120" y="180" width="60" height="40" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="150" y="205" text-anchor="middle" font-size="11" font-weight="600" fill="#002f3b">F-102</text>
-            <rect x="55" y="130" width="55" height="42" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="82" y="155" text-anchor="middle" font-size="11" font-weight="600" fill="#002f3b">F-106</text>
-            <rect x="115" y="130" width="55" height="42" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="142" y="155" text-anchor="middle" font-size="11" font-weight="600" fill="#002f3b">F-107</text>
-            <rect x="55" y="100" width="55" height="25" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="82" y="117" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">F-108</text>
-            <rect x="115" y="100" width="55" height="25" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="142" y="117" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">F-111</text>
-            <rect x="175" y="100" width="55" height="25" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="202" y="117" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">F-112</text>
-            <rect x="235" y="130" width="65" height="90" rx="4" fill="#f0dfe3" stroke="#9d1c30"/>
-            <text x="267" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#9d1c30">THE</text>
-            <text x="267" y="185" text-anchor="middle" font-size="11" font-weight="700" fill="#9d1c30">CHAPEL</text>
-            <rect x="175" y="130" width="55" height="42" rx="4" fill="#f4f1e3" stroke="#808285"/>
-            <text x="202" y="155" text-anchor="middle" font-size="10" fill="#808285">Kitchen</text>
-          </g>
-
-          <!-- LOBBY -->
-          <g class="wing" data-wing="lobby" onclick="focusWing('lobby')">
-            <rect x="90" y="280" width="230" height="60" rx="8" fill="#fff5d6" stroke="#b58e1a" stroke-width="2"/>
-            <text x="205" y="316" text-anchor="middle" font-size="16" font-weight="700" fill="#6b5210">THE LOBBY</text>
-            <text x="40" y="316" font-size="10" fill="#0a5d67">South Entry →</text>
-          </g>
-
-          <!-- WORSHIP CENTER -->
-          <g class="wing" data-wing="worship" onclick="focusWing('worship')">
-            <ellipse cx="190" cy="460" rx="150" ry="100" fill="#f7f0e3" stroke="#b58e1a" stroke-width="2"/>
-            <text x="190" y="455" text-anchor="middle" font-size="18" font-weight="700" fill="#6b5210">WORSHIP</text>
-            <text x="190" y="475" text-anchor="middle" font-size="18" font-weight="700" fill="#6b5210">CENTER</text>
-            <rect x="55" y="370" width="75" height="42" rx="4" fill="#ffffff" stroke="#808285"/>
-            <text x="92" y="390" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">FAMILY</text>
-            <text x="92" y="402" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">ROOM</text>
-            <rect x="250" y="370" width="75" height="42" rx="4" fill="#ffffff" stroke="#808285"/>
-            <text x="287" y="390" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">LIVING</text>
-            <text x="287" y="402" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">ROOM</text>
-          </g>
-
-          <!-- 2ND FLOOR above WC: Studio, East Room, Orange Room -->
-          <g class="wing" data-wing="secondfloor" onclick="focusWing('secondfloor')">
-            <rect x="40" y="580" width="320" height="120" rx="8" fill="#e6f3f4" stroke="#0a5d67" stroke-width="2" stroke-dasharray="4 3"/>
-            <text x="200" y="605" text-anchor="middle" font-size="14" font-weight="700" fill="#002f3b">SECOND FLOOR (above Worship Center)</text>
-            <rect x="55" y="625" width="90" height="50" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="100" y="650" text-anchor="middle" font-size="11" font-weight="600" fill="#002f3b">THE STUDIO</text>
-            <rect x="155" y="625" width="90" height="50" rx="4" fill="#ffffff" stroke="#0a5d67"/>
-            <text x="200" y="650" text-anchor="middle" font-size="11" font-weight="600" fill="#002f3b">EAST ROOM</text>
-            <rect x="255" y="625" width="90" height="50" rx="4" fill="#fbe4d4" stroke="#cc6633"/>
-            <text x="300" y="650" text-anchor="middle" font-size="11" font-weight="600" fill="#cc6633">ORANGE RM</text>
-          </g>
-
-          <!-- CONNECTING ARROWS -->
-          <line x1="325" y1="310" x2="395" y2="310" stroke="#008c95" stroke-width="3" marker-end="url(#arrowhead)"/>
-          <text x="360" y="300" text-anchor="middle" font-size="11" fill="#008c95" font-weight="700">To Wings →</text>
-
-          <!-- A WING (center) -->
-          <g class="wing" data-wing="a" onclick="focusWing('a')">
-            <rect x="400" y="170" width="180" height="280" rx="8" fill="#e1f1ee" stroke="#0a5d67" stroke-width="2"/>
-            <text x="490" y="200" text-anchor="middle" font-size="18" font-weight="700" fill="#002f3b">A WING</text>
-            <text x="490" y="218" text-anchor="middle" font-size="11" fill="#0a5d67">Nursery · 1st Floor</text>
-            <rect x="410" y="230" width="65" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="442" y="250" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">132</text>
-            <rect x="410" y="265" width="65" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="442" y="285" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">134</text>
-            <rect x="410" y="300" width="65" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="442" y="320" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">136</text>
-            <rect x="410" y="335" width="65" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="442" y="355" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">138</text>
-            <rect x="410" y="370" width="65" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="442" y="390" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">140</text>
-            <rect x="410" y="405" width="65" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="442" y="425" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">142</text>
-            <rect x="500" y="230" width="65" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="532" y="250" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">146</text>
-            <rect x="500" y="265" width="65" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="532" y="285" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">144</text>
-            <!-- Children's Check-in -->
-            <rect x="500" y="380" width="65" height="55" rx="4" fill="#ccecee" stroke="#008c95" stroke-width="2"/>
-            <text x="532" y="403" text-anchor="middle" font-size="9" fill="#002f3b" font-weight="700">CC</text>
-            <text x="532" y="418" text-anchor="middle" font-size="8" fill="#0a5d67">Check-in</text>
-          </g>
-
-          <!-- B WING (upper right) -->
-          <g class="wing" data-wing="b" onclick="focusWing('b')">
-            <rect x="600" y="40" width="280" height="140" rx="8" fill="#e1f1ee" stroke="#0a5d67" stroke-width="2"/>
-            <text x="740" y="70" text-anchor="middle" font-size="18" font-weight="700" fill="#002f3b">B WING</text>
-            <text x="740" y="88" text-anchor="middle" font-size="11" fill="#0a5d67">Preschool · 2nd Floor</text>
-            <rect x="615" y="100" width="55" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="642" y="120" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">102</text>
-            <rect x="680" y="100" width="55" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="707" y="120" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">104</text>
-            <rect x="745" y="100" width="55" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="772" y="120" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">108</text>
-            <rect x="810" y="100" width="55" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="837" y="120" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">110</text>
-            <rect x="615" y="138" width="55" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="642" y="158" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">112</text>
-            <rect x="680" y="138" width="55" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="707" y="158" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">116</text>
-            <rect x="745" y="138" width="55" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="772" y="158" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">120</text>
-            <rect x="810" y="138" width="55" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="837" y="158" text-anchor="middle" font-size="10" fill="#002f3b" font-weight="600">122</text>
-          </g>
-
-          <!-- C WING (right middle) -->
-          <g class="wing" data-wing="c" onclick="focusWing('c')">
-            <rect x="600" y="200" width="280" height="220" rx="8" fill="#e1f1ee" stroke="#0a5d67" stroke-width="2"/>
-            <text x="740" y="230" text-anchor="middle" font-size="18" font-weight="700" fill="#002f3b">C WING</text>
-            <text x="740" y="248" text-anchor="middle" font-size="11" fill="#0a5d67">Elementary · 1st Floor</text>
-            <!-- North entry -->
-            <rect x="710" y="186" width="60" height="18" rx="3" fill="#008c95"/>
-            <text x="740" y="199" text-anchor="middle" font-size="9" font-weight="700" fill="#fff">NORTH ENTRY</text>
-            <rect x="615" y="260" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="645" y="280" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">202</text>
-            <rect x="615" y="295" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="645" y="315" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">204</text>
-            <rect x="615" y="330" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="645" y="350" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">208</text>
-            <rect x="615" y="365" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="645" y="385" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">210</text>
-            <rect x="805" y="260" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="835" y="280" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">214</text>
-            <rect x="805" y="295" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="835" y="315" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">216</text>
-            <rect x="805" y="330" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="835" y="350" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">220</text>
-            <rect x="805" y="365" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="835" y="385" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">222</text>
-          </g>
-
-          <!-- D WING (right bottom) -->
-          <g class="wing" data-wing="d" onclick="focusWing('d')">
-            <rect x="600" y="440" width="280" height="220" rx="8" fill="#e1f1ee" stroke="#0a5d67" stroke-width="2"/>
-            <text x="740" y="470" text-anchor="middle" font-size="18" font-weight="700" fill="#002f3b">D WING</text>
-            <text x="740" y="488" text-anchor="middle" font-size="11" fill="#0a5d67">Youth · 2nd Floor</text>
-            <rect x="615" y="500" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="645" y="520" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">D232</text>
-            <rect x="615" y="535" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="645" y="555" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">D234</text>
-            <rect x="615" y="570" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="645" y="590" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">D236</text>
-            <rect x="615" y="605" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="645" y="625" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">D238</text>
-            <rect x="805" y="500" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="835" y="520" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">240</text>
-            <rect x="805" y="535" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="835" y="555" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">242</text>
-            <rect x="805" y="570" width="60" height="32" rx="4" fill="#fff" stroke="#0a5d67"/>
-            <text x="835" y="590" text-anchor="middle" font-size="10" font-weight="600" fill="#002f3b">244</text>
-            <rect x="700" y="630" width="100" height="28" rx="4" fill="#f0dfe3" stroke="#9d1c30"/>
-            <text x="750" y="648" text-anchor="middle" font-size="10" font-weight="700" fill="#9d1c30">CONFERENCE RM</text>
-          </g>
-
-          <!-- YOU ARE HERE marker - position set dynamically -->
-          <g id="youAreHere" class="you-here-pulse">
-            <circle cx="115" cy="310" r="18" fill="#9d1c30" stroke="#fff" stroke-width="3"/>
-            <text x="115" y="315" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">K</text>
-            <text x="115" y="345" text-anchor="middle" font-size="11" font-weight="700" fill="#9d1c30">YOU ARE HERE</text>
-          </g>
-        </svg>
-      </div>
-
-      <div class="map-legend">
-        <div class="legend-item"><div class="legend-swatch" style="background:#e6f3f4;border-color:#0a5d67"></div>Gym / Classrooms</div>
-        <div class="legend-item"><div class="legend-swatch" style="background:#e1f1ee;border-color:#0a5d67"></div>A / B / C / D Wings</div>
-        <div class="legend-item"><div class="legend-swatch" style="background:#fff5d6;border-color:#b58e1a"></div>Lobby</div>
-        <div class="legend-item"><div class="legend-swatch" style="background:#f7f0e3;border-color:#b58e1a"></div>Worship Center</div>
-        <div class="legend-item"><div class="legend-swatch" style="background:#9d1c30"></div>You Are Here</div>
-      </div>
-    </div>
-
-    <div class="map-side">
-      <div class="wing-info" id="wingInfo">
-        <h3>Tap a wing to see what's there</h3>
-        <p class="muted">Rooms, classes meeting today, and directions will appear here.</p>
-      </div>
-      <div class="qr-block">
-        <div class="qr-code" data-qr-dynamic="true"></div>
-        <div class="qr-label">Take this map with you</div>
-        <div class="qr-hint">Scan to continue navigating on your phone.</div>
-      </div>
+      <aside class="map-side">
+        <div class="wing-info" id="wingInfo">
+          <h3>Tap a wing</h3>
+          <p class="muted">Rooms and classes meeting today will appear here.</p>
+        </div>
+        <div class="qr-block">
+          <div class="qr-code" data-qr-dynamic="true"></div>
+          <div class="qr-label">Take this map with you</div>
+          <div class="qr-hint">Scan to continue on your phone.</div>
+        </div>
+      </aside>
     </div>
   </section>
 
@@ -1103,10 +1011,10 @@ const wednesdayAdult = [
     room: 'Lobby & F-100',
     wing: 'gym',
     teachers: 'Grant Wright, Sarah Smith',
-    desc: 'Build friendships across languages through one-on-one English conversation. Training required.',
+    desc: 'One-on-one English conversation. Training required before your first session.',
     special: true,
     sessions: ['6–7 PM', '7–8 PM', '8–9 PM'],
-    signup: true
+    detailScreen: 'friendspeak'
   },
   { name: 'FriendSpeak ESL', room: 'Living Room', wing: 'worship', teachers: 'Janet Gallman', desc: '7–8 PM only.' },
   { name: 'Deaf Ministry — Signing Worship Songs', room: 'Orange Room', wing: 'secondfloor', teachers: 'Benton Dibrell', desc: 'Meets 6–7 PM.' }
@@ -1118,18 +1026,19 @@ function renderClassCard(c) {
   if (c.special && c.sessions) {
     extras += '<div class="sessions">' + c.sessions.map(s => '<span class="session-chip">' + s + '</span>').join('') + '</div>';
   }
-  if (c.signup) {
-    extras += '<div class="teachers">Training required — see the FriendSpeak signup.</div>';
-  }
   const klass = c.special ? 'card special' : 'card';
   const badge = c.special ? '<div class="badge">Multi-Session</div>' : '';
-  return '<div class="' + klass + '" onclick="focusRoom(\'' + c.wing + '\')">' +
+  // FriendSpeak gets a dedicated detail screen; other classes jump to the map.
+  const click = c.detailScreen ? "go('" + c.detailScreen + "')" : "focusRoom('" + c.wing + "')";
+  const cta = c.detailScreen ? '<div class="teachers">Tap for times &amp; signup →</div>' : '';
+  return '<div class="' + klass + '" onclick="' + click + '">' +
     badge +
     '<span class="room-tag">' + c.room + '</span>' +
     '<h4>' + c.name + '</h4>' +
     (c.desc ? '<div class="desc">' + c.desc + '</div>' : '') +
     extras +
     '<div class="teachers">' + c.teachers + '</div>' +
+    cta +
     '</div>';
 }
 function renderCareCard(c) {
@@ -1142,16 +1051,45 @@ function renderCareCard(c) {
     '</div>';
 }
 
-function renderList(containerId, items, groupKey) {
+/* ----- Paginator -----
+   Renders `items` into `containerId` as a .card-grid, paginated at `perPage`.
+   If items.length <= perPage no controls are drawn.
+   Each paginator registers itself on `paginators[containerId]` so Next/Prev
+   buttons can call back into it. */
+const paginators = {};
+function paginate(containerId, items, perPage, renderFn) {
   const el = document.getElementById(containerId);
   if (!el) return;
-  // group by room prefix or wing if you want; just render flat grid
-  el.innerHTML = '<div class="card-grid">' + items.map(renderClassCard).join('') + '</div>';
+  let page = 0;
+  const total = Math.max(1, Math.ceil(items.length / perPage));
+  function render() {
+    const start = page * perPage;
+    const slice = items.slice(start, start + perPage);
+    let html = '<div class="card-grid">' + slice.map(renderFn).join('') + '</div>';
+    if (total > 1) {
+      html += '<div class="paginator">' +
+        '<button class="btn secondary" ' + (page === 0 ? 'disabled' : '') +
+          ' onclick="paginators[\'' + containerId + '\'].prev()">&larr; Previous</button>' +
+        '<span class="page-indicator">Page ' + (page + 1) + ' of ' + total + '</span>' +
+        '<button class="btn" ' + (page === total - 1 ? 'disabled' : '') +
+          ' onclick="paginators[\'' + containerId + '\'].next()">Next &rarr;</button>' +
+        '</div>';
+    }
+    el.innerHTML = html;
+  }
+  paginators[containerId] = {
+    next() { if (page < total - 1) { page++; render(); resetIdle(); } },
+    prev() { if (page > 0) { page--; render(); resetIdle(); } },
+    reset() { page = 0; render(); }
+  };
+  render();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  renderList('sunday-adult-list', sundayAdult);
-  renderList('wed-adult-list', wednesdayAdult);
+  // Sunday adult: 11 items; paginate 6 per page (2 pages).
+  paginate('sunday-adult-list', sundayAdult, 6, renderClassCard);
+  // Wednesday adult: 6 items; paginate just in case (fits on one page).
+  paginate('wed-adult-list', wednesdayAdult, 6, renderClassCard);
   const care = document.getElementById('sunday-care-list');
   if (care) care.innerHTML = sundayCare.map(renderCareCard).join('');
 
@@ -1200,8 +1138,9 @@ function refreshDynamicQRs() {
 }
 
 /* ----- You Are Here placement -----
-   Lobby kiosk: near south entrance / lobby.
-   Children's Wing kiosk: in the A/B wing area.
+   Coordinates are in the map.png coordinate space (2880 x 3888).
+   Lobby kiosk: near SOUTH MAIN ENTRANCE on the left side of the lobby.
+   Children's Wing kiosk: in the corridor between A and C wings, near Children's Check-in.
 */
 function positionYouAreHere() {
   const g = document.getElementById('youAreHere');
@@ -1210,28 +1149,29 @@ function positionYouAreHere() {
   const label = g.querySelector('text:nth-of-type(2)');
   let cx, cy;
   if (KIOSK_LOCATION === 'childrens-wing') {
-    cx = 583; cy = 260; // between A and C wings — the children's wing corridor
+    cx = 1880; cy = 2500;
   } else {
-    cx = 115; cy = 310; // lobby / south entry
+    cx = 470; cy = 1120;
   }
   circle.setAttribute('cx', cx);
   circle.setAttribute('cy', cy);
   kText.setAttribute('x', cx);
-  kText.setAttribute('y', cy + 5);
+  kText.setAttribute('y', cy + 28);
   label.setAttribute('x', cx);
-  label.setAttribute('y', cy + 35);
+  label.setAttribute('y', cy + 140);
 }
 
-/* ----- Wing zoom + day-aware classes ----- */
+/* ----- Wing zoom + day-aware classes -----
+   Viewbox coordinates are in the map.png coordinate space (2880 x 3888). */
 const wings = {
-  gym: { label: 'The Gym Wing', rooms: ['F-100','F-102','F-106','F-107','F-108','F-111','F-112','The Chapel','Kitchen'], vb: [40,40,290,230] },
-  lobby: { label: 'The Lobby', rooms: ['Start Here', "Children's Check-in", 'Welcome Center'], vb: [40,260,300,100] },
-  worship: { label: 'Worship Center', rooms: ['Family Room', 'Living Room'], vb: [40,360,300,220] },
-  secondfloor: { label: 'Second Floor (above Worship Center)', rooms: ['The Studio', 'East Room', 'Orange Room'], vb: [40,580,330,130] },
-  a: { label: 'A Wing — Nursery (1st floor)', rooms: ['132','134','136','138','140','142','144','146',"Children's Check-in"], vb: [395,170,195,290] },
-  b: { label: 'B Wing — Preschool (2nd floor)', rooms: ['102','104','108','110','112','116','120','122'], vb: [595,40,295,150] },
-  c: { label: 'C Wing — Elementary (1st floor)', rooms: ['202','204','208','210','214','216','220','222','North Entry'], vb: [595,200,295,230] },
-  d: { label: 'D Wing — Youth (2nd floor)', rooms: ['D-232','D-234','D-236','D-238','240','242','244','Conference Room'], vb: [595,440,295,230] }
+  gym:         { label: 'The Gym Wing',                     rooms: ['F-100','F-102','F-106','F-107','F-108','F-109','F-111','F-112','The Chapel','Kitchen'], vb: [380, 110, 1100, 780] },
+  lobby:       { label: 'The Lobby',                        rooms: ['Start Here', "Children's Check-in", 'Welcome Center'],                                   vb: [350, 800, 1200, 700] },
+  worship:     { label: 'Worship Center',                   rooms: ['Family Room', 'Living Room'],                                                            vb: [180, 1380, 1380, 850] },
+  secondfloor: { label: 'Second Floor (above Worship Center)', rooms: ['The Studio', 'East Room', 'Orange Room'],                                              vb: [50,  2180, 1480, 480] },
+  a:           { label: 'A Wing — Nursery (1st Floor)',     rooms: ['132','134','136','138','140','142','144','146',"Children's Check-in"],                   vb: [1500, 2100, 820, 960] },
+  b:           { label: 'B Wing — Preschool',               rooms: ['102','104','106','108','110','112','114','116','118','120','122','156','160','162','164','166','168','170','172','174','176','178'], vb: [1400, 60, 920, 2100] },
+  c:           { label: 'C Wing — Elementary (1st Floor)',  rooms: ['202','204','206','208','210','214','216','218','220','222','North Entry'],                vb: [1910, 1770, 880, 1160] },
+  d:           { label: 'D Wing — Youth (2nd Floor)',       rooms: ['232','234','236','238','240','242','244','Conference Room','Church Receptionist'],        vb: [2010, 2850, 850, 970] }
 };
 
 function focusWing(key) {
@@ -1239,10 +1179,9 @@ function focusWing(key) {
   if (!w) return;
   zoomTo(w.vb);
 
-  // Highlight active
-  document.querySelectorAll('.wing').forEach(el => el.classList.remove('active'));
-  const active = document.querySelector('.wing[data-wing="' + key + '"]');
-  if (active) active.classList.add('active');
+  // Highlight active hotspots (there may be multiple hotspots for the same wing).
+  document.querySelectorAll('.hotspot').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.hotspot[data-wing="' + key + '"]').forEach(el => el.classList.add('active'));
 
   // Show wing info
   const info = document.getElementById('wingInfo');
@@ -1291,18 +1230,19 @@ function classesInWingToday(wingKey) {
   return list;
 }
 
+const MAP_FULL_VB = [0, 0, 2880, 3888];
 function zoomTo(vb) {
-  // Animate viewBox toward target [x,y,w,h] with a little padding around.
+  // Animate viewBox toward target [x,y,w,h] in map.png space with a small pad around it.
   const [x, y, w, h] = vb;
-  const pad = 20;
+  const pad = 80;
   animateViewBox([x - pad, y - pad, w + pad * 2, h + pad * 2]);
 }
 let vbAnim = null;
 function animateViewBox(target) {
   const svg = document.getElementById('buildingMap');
-  const current = (svg.getAttribute('viewBox') || '0 0 1000 750').split(/\s+/).map(Number);
+  const current = (svg.getAttribute('viewBox') || MAP_FULL_VB.join(' ')).split(/\s+/).map(Number);
   const start = performance.now();
-  const dur = 400;
+  const dur = 450;
   if (vbAnim) cancelAnimationFrame(vbAnim);
   function frame(now) {
     const t = Math.min(1, (now - start) / dur);
@@ -1314,11 +1254,11 @@ function animateViewBox(target) {
   vbAnim = requestAnimationFrame(frame);
 }
 function resetMapZoom() {
-  animateViewBox([0, 0, 1000, 750]);
-  document.querySelectorAll('.wing').forEach(el => el.classList.remove('active'));
+  animateViewBox(MAP_FULL_VB);
+  document.querySelectorAll('.hotspot').forEach(el => el.classList.remove('active'));
   const info = document.getElementById('wingInfo');
   if (info) {
-    info.innerHTML = '<h3>Tap a wing to see what\'s there</h3><p class="muted">Rooms, classes meeting today, and directions will appear here.</p>';
+    info.innerHTML = '<h3>Tap a wing</h3><p class="muted">Rooms and classes meeting today will appear here.</p>';
   }
 }
 </script>
