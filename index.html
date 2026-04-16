@@ -371,77 +371,171 @@
     text-transform: uppercase;
   }
 
-  /* ============ BUILDING MAP ============ */
-  /* Sidebar on LEFT, map takes the full remaining width on the RIGHT. */
-  .map-layout {
+  /* ============ BUILDING MAP (v3 layout) ============
+     Left column ~25% (buttons stacked, title, info, QR at bottom),
+     Right ~75% full-height stage with stacked 1st/2nd floor images,
+     HTML "You Are Here" marker, HTML Map Legend (both stay sharp). */
+  .map-grid {
     flex: 1 1 auto; min-height: 0;
-    display: flex;
-    gap: 16px;
+    display: grid;
+    grid-template-columns: minmax(260px, 25%) 1fr;
+    gap: 20px;
     overflow: hidden;
   }
-  .map-wrap {
-    flex: 1 1 auto;
-    min-width: 0;
-    min-height: 0;
-    background: #fff;
-    border-radius: 14px;
-    padding: 10px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    display: flex;
-  }
-  .map-viewport {
-    flex: 1 1 auto;
-    min-width: 0;
+  .map-sidebar {
+    display: flex; flex-direction: column;
+    gap: 14px;
     min-height: 0;
     overflow: hidden;
-    background: #fafcfd;
-    border-radius: 10px;
-    display: flex;
   }
-  #buildingMap {
+  .map-sidebar__buttons {
+    display: flex; flex-direction: column; gap: 10px;
+    flex: 0 0 auto;
+  }
+  .map-sidebar__buttons .btn {
+    justify-content: flex-start;
     width: 100%;
-    height: 100%;
-    display: block;
-    font-family: "Open Sans", sans-serif;
   }
+  .map-sidebar__header { flex: 0 0 auto; }
+  .map-sidebar__header h2 { margin-bottom: 2px; }
+  .map-sidebar__header .lede { font-size: 14px; color: var(--gray); }
+
+  .map-sidebar__info {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .map-sidebar__info h3 { margin-bottom: 6px; font-size: 18px; }
+  .map-sidebar__info .muted { color: var(--gray); font-size: 13px; line-height: 1.5; }
+
+  .map-sidebar__qr { flex: 0 0 auto; }
+  .map-sidebar__qr .qr-block { max-width: none; align-self: stretch; padding: 14px; }
+
   .map-loc-chip {
     background: var(--bright-aqua); color: var(--deep-teal);
     padding: 6px 12px; border-radius: 999px;
     font-weight: 700; font-size: 13px;
     display: inline-flex; align-items: center; gap: 8px;
     white-space: nowrap;
+    align-self: flex-start;
   }
   .map-loc-chip .dot { width: 9px; height: 9px; background: var(--deep-teal); border-radius: 50%; }
 
-  .you-here-pulse { animation: pulse 1.6s ease-in-out infinite; }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.45; }
-  }
-
-  /* Floor-2 overlay — hidden by default, toggled by the "Show 2nd Floor" button. */
-  #floor2Overlay { display: none; }
-  #floor2Overlay.visible { display: inline; }
-
-  .map-side {
-    flex: 0 0 340px;
-    display: flex; flex-direction: column;
-    gap: 14px;
+  /* Right-side map stage: holds stacked images + HTML overlays. */
+  .map-stage {
+    position: relative;
+    min-width: 0;
     min-height: 0;
-    overflow: hidden;
-  }
-  .map-side .qr-block { align-self: stretch; max-width: none; }
-  .wing-info {
-    background: #fff; padding: 16px 18px; border-radius: 12px;
+    background: #fff;
+    border-radius: 14px;
     box-shadow: var(--shadow);
-    flex: 1 1 auto;
-    min-height: 0;
+    padding: 10px;
     overflow: hidden;
-    display: flex; flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .wing-info h3 { margin-bottom: 6px; font-size: 19px; }
-  .wing-info .muted { color: var(--gray); font-size: 13px; }
+  /* Frame is sized by JS to fit stage while preserving image aspect ratio,
+     so percentage-positioned overlays line up exactly with the image. */
+  .map-frame {
+    position: relative;
+    aspect-ratio: 5234 / 4246;
+  }
+  .map-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+  .map-layer--1st { filter: blur(0); opacity: 1; }
+  .map-layer--2nd { opacity: 0; }
+  /* When 2nd floor is shown, blur+fade 1st and fade in 2nd. */
+  .map-frame.show-2nd .map-layer--1st { filter: blur(3px); opacity: 0.3; }
+  .map-frame.show-2nd .map-layer--2nd { opacity: 1; }
+
+  /* HTML "You Are Here" — lives above both layers, never blurs. */
+  .you-here {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex; flex-direction: column; align-items: center;
+    gap: 6px;
+    pointer-events: none;
+    z-index: 3;
+  }
+  .you-here__dot {
+    width: 48px; height: 48px;
+    background: var(--accent-red);
+    border: 4px solid #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-family: "Alfa Slab One", Georgia, serif;
+    font-size: 24px;
+    line-height: 1;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  .you-here__label {
+    background: #fff;
+    color: var(--accent-red);
+    font-weight: 700;
+    font-family: "Open Sans";
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3); }
+    50%      { transform: scale(1.08); box-shadow: 0 4px 18px rgba(157, 28, 48, 0.5); }
+  }
+
+  /* HTML Map Legend — overlays top-right of the map, never blurs. */
+  .map-legend {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    z-index: 4;
+    min-width: 160px;
+    max-width: 220px;
+  }
+  .map-legend__title {
+    font-family: "Alfa Slab One", Georgia, serif;
+    font-size: 13px;
+    color: var(--deep-teal);
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  .map-legend__list { display: grid; gap: 3px; }
+  .map-legend__item {
+    font-size: 12px;
+    color: var(--gray);
+    line-height: 1.3;
+    display: flex; gap: 8px;
+  }
+  .map-legend__abbr {
+    font-family: "Open Sans";
+    font-weight: 700;
+    color: var(--deep-teal);
+    min-width: 34px;
+  }
   .wing-class-list {
     display: flex; flex-direction: column; gap: 8px;
     margin-top: 10px;
@@ -929,53 +1023,61 @@
        BUILDING MAP
        ================================================= -->
   <section class="screen" id="screen-map">
-    <div class="controls">
-      <button class="btn secondary" onclick="goBack()"><span class="arrow">&larr;</span> Back</button>
-      <button class="btn ghost" onclick="goHome()">Home</button>
-      <button class="btn ghost" onclick="resetMapView()">Reset View</button>
-      <button class="btn ghost" id="floor2Toggle" onclick="toggleFloor2()">Show 2nd Floor</button>
-    </div>
-    <div class="section-head" style="display:flex; justify-content:space-between; align-items:flex-end; gap:16px;">
-      <div>
-        <h2>Building Map</h2>
-        <p class="lede">Find any room. See what's meeting today.</p>
-      </div>
-      <div class="map-loc-chip"><span class="dot"></span>You are here: <span id="kioskLocName">Lobby</span></div>
-    </div>
-
-    <div class="map-layout">
-      <!-- Sidebar on LEFT: location badge, wing info, QR -->
-      <aside class="map-side">
-        <div class="wing-info" id="wingInfo">
-          <h3>Building Map</h3>
-          <p class="muted">You're in the Lobby (south main entrance). Tap a class below to see where to go, or scan the QR to take the map with you.</p>
+    <div class="map-grid">
+      <!-- LEFT 25%: buttons, title, info, QR -->
+      <aside class="map-sidebar">
+        <div class="map-sidebar__buttons">
+          <button class="btn secondary" onclick="goBack()"><span class="arrow">&larr;</span> Back</button>
+          <button class="btn ghost" onclick="goHome()">Home</button>
+          <button class="btn ghost" id="floor2Toggle" onclick="toggleFloor2()">Show 2nd Floor</button>
+          <button class="btn ghost" onclick="resetMapView()">Reset View</button>
         </div>
-        <div class="qr-block">
-          <div class="qr-code" id="mapPhoneQR"></div>
-          <div class="qr-label">Take this map with you</div>
-          <div class="qr-hint">Scan to open on your phone.</div>
+        <div class="map-sidebar__header">
+          <h2>Building Map</h2>
+          <p class="lede">Find any room. See what's meeting today.</p>
+        </div>
+        <div class="map-loc-chip"><span class="dot"></span>You are here: <span id="kioskLocName">Lobby</span></div>
+        <div class="map-sidebar__info" id="wingInfo">
+          <h3>Welcome</h3>
+          <p class="muted">You're at the Lobby kiosk (south main entrance). Tap a class from Bible Classes to see which wing to head to, or scan the QR code to take the map with you.</p>
+        </div>
+        <div class="map-sidebar__qr">
+          <div class="qr-block">
+            <div class="qr-code" id="mapPhoneQR"></div>
+            <div class="qr-label">Take this map with you</div>
+            <div class="qr-hint">Scan to open on your phone.</div>
+          </div>
         </div>
       </aside>
 
-      <!-- Map on RIGHT: map-1st.png is the 1st-floor view (5234 x 4246).
-           A 2nd-floor image will layer on top when Dan provides it. -->
-      <div class="map-wrap">
-        <div class="map-viewport">
-          <svg id="buildingMap" viewBox="0 0 5234 4246" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-            <image href="map-1st.png" x="0" y="0" width="5234" height="4246" preserveAspectRatio="xMidYMid meet"/>
+      <!-- RIGHT 75%: full-height stage with stacked 1st/2nd floor images,
+           HTML "You Are Here" marker, and HTML Map Legend (both stay sharp). -->
+      <div class="map-stage" id="mapStage">
+        <div class="map-frame" id="mapFrame">
+          <img class="map-layer map-layer--1st" src="map-1st.png" alt="First Colony 1st floor map"/>
+          <img class="map-layer map-layer--2nd" src="map-2nd.png" alt="First Colony 2nd floor overlay"/>
 
-            <!-- 2nd Floor overlay — hidden by default, toggled on via "Show 2nd Floor" button.
-                 Non-functional until Dan drops in the 2nd-floor image/zones. -->
-            <g id="floor2Overlay"></g>
+          <!-- Lobby kiosk You Are Here: pixel (2258, 3410) in 5234x4246 image
+               = 43.1% left, 80.3% top. positionYouAreHere() writes these. -->
+          <div class="you-here" id="youHere">
+            <div class="you-here__dot">K</div>
+            <div class="you-here__label">YOU ARE HERE</div>
+          </div>
+        </div>
 
-            <!-- YOU ARE HERE marker — position set by positionYouAreHere().
-                 Coords are approximate for map-1st.png; Dan will tune. -->
-            <g id="youAreHere" class="you-here-pulse">
-              <circle cx="1200" cy="2400" r="110" fill="#9d1c30" stroke="#fff" stroke-width="14"/>
-              <text x="1200" y="2443" text-anchor="middle" font-size="115" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
-              <text x="1200" y="2600" text-anchor="middle" font-size="72" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
-            </g>
-          </svg>
+        <!-- HTML Map Legend — covers the legend baked into the image so it
+             stays sharp when the 1st floor layer blurs. -->
+        <div class="map-legend">
+          <div class="map-legend__title">Map Legend</div>
+          <div class="map-legend__list">
+            <div class="map-legend__item"><span class="map-legend__abbr">IC</span><span>Info Center</span></div>
+            <div class="map-legend__item"><span class="map-legend__abbr">CC</span><span>Children's Check-in</span></div>
+            <div class="map-legend__item"><span class="map-legend__abbr">CRA</span><span>Classroom A</span></div>
+            <div class="map-legend__item"><span class="map-legend__abbr">CRB</span><span>Classroom B</span></div>
+            <div class="map-legend__item"><span class="map-legend__abbr">CRC</span><span>Classroom C</span></div>
+            <div class="map-legend__item"><span class="map-legend__abbr">CR</span><span>Conference Room</span></div>
+            <div class="map-legend__item"><span class="map-legend__abbr">E</span><span>Entrance</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1037,6 +1139,11 @@ function setScreen(name) {
     history.replaceState(null, '', '#' + currentScreen);
   }
   window.scrollTo({ top: 0, behavior: 'auto' });
+  // Size the map frame once the map screen is actually visible — the stage
+  // has zero dimensions while its screen is display:none.
+  if (currentScreen === 'map') {
+    requestAnimationFrame(fitMapFrame);
+  }
   resetIdle();
 }
 function resetIdle() {
@@ -1211,53 +1318,71 @@ function renderMapPhoneQR() {
 }
 
 /* ----- You Are Here placement -----
-   Coordinates are in the map.png coordinate space (2880 x 3888).
-   Lobby kiosk: near SOUTH MAIN ENTRANCE on the left side of the lobby.
-   Children's Wing kiosk: in the corridor between A and C wings, near Children's Check-in.
+   The marker is an HTML element positioned by percentage over a frame that's
+   sized to the 1st-floor image aspect (5234 x 4246), so percent coords map
+   directly to image pixels.
+   Lobby kiosk: pixel (2258, 3410) → left 43.1%, top 80.3%.
+   Children's-wing kiosk: placeholder until Dan provides exact pixel.
 */
 function positionYouAreHere() {
-  const g = document.getElementById('youAreHere');
-  const circle = g.querySelector('circle');
-  const kText = g.querySelector('text:nth-of-type(1)');
-  const label = g.querySelector('text:nth-of-type(2)');
-  // Coords in map-1st.png coordinate space (5234 x 4246). Placeholder values —
-  // Dan will tune once the map is on-screen.
-  let cx, cy;
+  const el = document.getElementById('youHere');
+  if (!el) return;
+  const IMG_W = 5234, IMG_H = 4246;
+  let px, py;
   if (KIOSK_LOCATION === 'childrens-wing') {
-    cx = 3000; cy = 1800;   // placeholder — tune to actual A/B corridor spot
+    px = 3000; py = 1800;   // placeholder — tune to A/B corridor spot
   } else {
-    cx = 1200; cy = 2400;   // placeholder — tune to south main entrance
+    px = 2258; py = 3410;   // Lobby kiosk — south main entrance
   }
-  circle.setAttribute('cx', cx);
-  circle.setAttribute('cy', cy);
-  kText.setAttribute('x', cx);
-  kText.setAttribute('y', cy + 43);
-  label.setAttribute('x', cx);
-  label.setAttribute('y', cy + 200);
+  el.style.left = (px / IMG_W * 100).toFixed(3) + '%';
+  el.style.top  = (py / IMG_H * 100).toFixed(3) + '%';
 }
 
-/* Toggle the 2nd-floor overlay layer. Non-functional until Dan provides
-   the 2nd-floor image/zones; button label flips either way. */
+/* Fit the map frame inside the stage while preserving the 1st-floor image's
+   aspect ratio, so percentage-positioned overlays (You Are Here) line up
+   exactly with the displayed image. */
+function fitMapFrame() {
+  const stage = document.getElementById('mapStage');
+  const frame = document.getElementById('mapFrame');
+  if (!stage || !frame) return;
+  const style = getComputedStyle(stage);
+  const padX = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+  const padY = parseFloat(style.paddingTop) + parseFloat(style.paddingBottom);
+  const sw = stage.clientWidth - padX;
+  const sh = stage.clientHeight - padY;
+  if (sw <= 0 || sh <= 0) return;
+  const aspect = 5234 / 4246;
+  let w, h;
+  if (sw / sh > aspect) { h = sh; w = h * aspect; }
+  else                  { w = sw; h = w / aspect; }
+  frame.style.width = w + 'px';
+  frame.style.height = h + 'px';
+}
+window.addEventListener('resize', fitMapFrame);
+
+/* Toggle the 2nd-floor overlay. Blurs + fades the 1st floor, fades in
+   the 2nd floor image on top (pure CSS transitions via .show-2nd class). */
 function toggleFloor2() {
-  const layer = document.getElementById('floor2Overlay');
+  const frame = document.getElementById('mapFrame');
   const btn = document.getElementById('floor2Toggle');
-  const on = layer.classList.toggle('visible');
-  btn.textContent = on ? 'Hide 2nd Floor' : 'Show 2nd Floor';
+  if (!frame || !btn) return;
+  const on = frame.classList.toggle('show-2nd');
+  btn.textContent = on ? 'Show 1st Floor' : 'Show 2nd Floor';
   resetIdle();
 }
 
-/* Reset the map view to its initial state: clear any wing-specific
-   sidebar info and hide the 2nd-floor overlay. */
+/* Reset the map view: clear any wing-specific sidebar info and return
+   to the 1st-floor view. */
 function resetMapView() {
   const info = document.getElementById('wingInfo');
   if (info) {
-    info.innerHTML = '<h3>Building Map</h3>' +
-      '<p class="muted">Tap a class to see where to go, or scan the QR to take the map with you.</p>';
+    info.innerHTML = '<h3>Welcome</h3>' +
+      '<p class="muted">You\'re at the Lobby kiosk (south main entrance). Tap a class from Bible Classes to see which wing to head to, or scan the QR code to take the map with you.</p>';
   }
-  const layer = document.getElementById('floor2Overlay');
+  const frame = document.getElementById('mapFrame');
   const btn = document.getElementById('floor2Toggle');
-  if (layer && layer.classList.contains('visible')) {
-    layer.classList.remove('visible');
+  if (frame && frame.classList.contains('show-2nd')) {
+    frame.classList.remove('show-2nd');
     if (btn) btn.textContent = 'Show 2nd Floor';
   }
   resetIdle();
