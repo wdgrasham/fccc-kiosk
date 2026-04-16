@@ -18,14 +18,18 @@
     --deep-teal: #002f3b;
     --classic-teal: #0a5d67;
     --bright-teal: #008c95;
+    --accent: #008996;          /* website link/CTA teal (measured from site) */
     --bright-aqua: #43beac;
     --accent-red: #9d1c30;
     --gray: #808285;
-    --bg: #f4f7f8;
+    --body-text: #555555;       /* website body gray */
+    --bg: #f3f4f6;              /* website page background */
     --surface: #ffffff;
     --shadow: 0 6px 18px rgba(0, 47, 59, 0.08);
     --shadow-lg: 0 14px 40px rgba(0, 47, 59, 0.18);
+    --card-shadow: rgba(0, 0, 0, 0.1) 0 14px 36px 0;  /* website event-card shadow */
     --radius: 14px;
+    --card-radius: 28px;        /* website event-card radius */
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -51,27 +55,23 @@
   /* Root app container — locked to viewport, no scroll */
   #app { height: 100vh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; }
 
-  /* Top bar — minimal, no website nav */
+  /* Top bar — white with real logo, matching the website header */
   .topbar {
     flex: 0 0 auto;
-    background: var(--deep-teal);
-    color: #fff;
-    padding: 12px 28px;
+    background: #ffffff;
+    color: var(--deep-teal);
+    padding: 14px 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
+    border-bottom: 1px solid #e5e7eb;
   }
   .brand-block { display: flex; align-items: center; gap: 16px; }
-  /* Real FCCC logo from firstcolonychurch.org. The logo uses brand teals
-     and red on a light background; for the dark topbar we invert to white
-     per the brand guide's "Reverse Logo on dark backgrounds" rule. */
-  .logo-img {
-    height: 40px; width: auto; display: block;
-    filter: brightness(0) invert(1);
-  }
-  .brand-sub { font-size: 11px; opacity: 0.75; letter-spacing: 0.4px; text-transform: uppercase; color: #fff; }
-  .topbar-right { display: flex; align-items: center; gap: 12px; font-size: 14px; opacity: 0.85; }
+  /* Real FCCC logo, shown in native colors (teals + red) on white. */
+  .logo-img { height: 44px; width: auto; display: block; }
+  .brand-sub { font-size: 11px; opacity: 0.75; letter-spacing: 0.4px; text-transform: uppercase; color: var(--gray); }
+  .topbar-right { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--gray); }
 
   /* Screen system — every screen locked to available viewport area, no scroll */
   .screen {
@@ -124,55 +124,75 @@
   .hero .welcome .accent { color: var(--bright-teal); }
   .hero .sub { margin-top: 8px; font-size: 17px; color: var(--classic-teal); font-weight: 400; letter-spacing: 0.5px; }
 
+  /* Home tiles = event-card pattern from firstcolonychurch.org.
+     Photo at top, optional pill badge overlay, body with title/desc/CTA. */
   .home-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    max-width: 1000px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    max-width: 1480px;
     width: 100%;
   }
   .tile {
     background: var(--surface);
-    border-radius: 18px;
-    padding: 24px 28px;
-    min-height: 180px;
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;                 /* clip the image to the card radius */
     cursor: pointer;
-    box-shadow: var(--shadow);
-    border: 2px solid transparent;
-    display: flex; flex-direction: column; justify-content: space-between; gap: 14px;
-    transition: transform 0.12s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    display: flex; flex-direction: column;
+    transition: transform 0.12s ease, box-shadow 0.15s ease;
     position: relative;
-    overflow: hidden;
+    min-height: 0;
   }
   .tile:active { transform: scale(0.985); }
-  .tile:hover { box-shadow: var(--shadow-lg); border-color: var(--bright-aqua); }
-  /* Thin brand-colored top band, matching the per-variant icon color. */
-  .tile::before {
-    content: "";
+  .tile:hover { transform: translateY(-2px); }
+  .tile-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 539 / 303;          /* website event-card media ratio */
+    background: #e8eef0;
+    overflow: hidden;
+  }
+  .tile-media img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .tile-pill {
     position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 6px;
-    background: var(--bright-aqua);
+    top: 14px; left: 14px;
+    background: var(--accent);
+    color: #fff;
+    font-family: "Open Sans";
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
   }
-  .tile.teal::before { background: var(--bright-teal); }
-  .tile.aqua::before { background: var(--bright-aqua); }
-  .tile.deep::before { background: var(--deep-teal); }
-  .tile.red::before  { background: var(--accent-red); }
-  .tile .tile-icon {
-    width: 64px; height: 64px;
-    border-radius: 16px;
-    background: var(--bright-aqua);
-    color: var(--deep-teal);
-    display: flex; align-items: center; justify-content: center;
+  .tile-body {
+    padding: 22px 24px 24px;
+    display: flex; flex-direction: column; gap: 8px;
+    flex: 1 1 auto;
   }
-  .tile .tile-icon svg { width: 34px; height: 34px; display: block; }
-  .tile.teal .tile-icon { background: var(--bright-teal); color: #fff; }
-  .tile.aqua .tile-icon { background: var(--bright-aqua); color: var(--deep-teal); }
-  .tile.deep .tile-icon { background: var(--deep-teal); color: #fff; }
-  .tile.red .tile-icon { background: var(--accent-red); color: #fff; }
-  .tile-title { font-family: "Alfa Slab One"; font-size: 26px; color: var(--deep-teal); line-height: 1.1; }
-  .tile-body { font-size: 14px; color: var(--gray); line-height: 1.45; }
-  .tile-cta { align-self: flex-start; font-weight: 600; color: var(--bright-teal); font-size: 14px; }
+  .tile-title {
+    font-family: "Alfa Slab One", Georgia, serif;
+    font-weight: 400;                 /* Alfa Slab One ships as one weight */
+    font-size: 24px;
+    color: var(--body-text);
+    line-height: 1.15;
+  }
+  .tile-desc { font-size: 14px; color: var(--gray); line-height: 1.5; }
+  .tile-cta {
+    margin-top: auto;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tile-cta .arrow { font-size: 18px; line-height: 1; }
 
   /* ============ SECTION HEADER (sub screens) ============ */
   .section-head { margin-bottom: 14px; flex: 0 0 auto; }
@@ -439,11 +459,11 @@
     h2 { font-size: 28px; }
     .hero .welcome { font-size: 40px; }
     .screen { padding: 24px 20px; }
-    .home-grid { grid-template-columns: 1fr; }
-    .tile { min-height: 150px; padding: 24px; }
-    .tile-title { font-size: 24px; }
-    .topbar { padding: 14px 18px; }
-    .logo-img { height: 32px; }
+    .home-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .tile-body { padding: 18px 20px 20px; }
+    .tile-title { font-size: 22px; }
+    .topbar { padding: 12px 18px; }
+    .logo-img { height: 36px; }
   }
 </style>
 </head>
@@ -472,59 +492,49 @@
       <div class="sub">Tap a card below to explore</div>
     </div>
     <div class="home-grid">
-      <div class="tile teal" onclick="go('new-here')">
-        <div class="tile-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+      <div class="tile" onclick="go('new-here')">
+        <div class="tile-media">
+          <img src="assets/images/new-here.jpg" alt="Sunday worship at First Colony" />
+          <span class="tile-pill">Welcome</span>
         </div>
-        <div>
+        <div class="tile-body">
           <div class="tile-title">New Here?</div>
-          <div class="tile-body">Learn More about First Colony</div>
+          <div class="tile-desc">Learn More about First Colony</div>
+          <span class="tile-cta">Learn More <span class="arrow">&rarr;</span></span>
         </div>
-        <div class="tile-cta">Get oriented &rarr;</div>
       </div>
-      <div class="tile aqua" onclick="go('map')">
-        <div class="tile-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
-            <line x1="8" y1="2" x2="8" y2="18"/>
-            <line x1="16" y1="6" x2="16" y2="22"/>
-          </svg>
+      <div class="tile" onclick="go('map')">
+        <div class="tile-media">
+          <img src="map.png" alt="First Colony building map" />
+          <span class="tile-pill">Navigate</span>
         </div>
-        <div>
+        <div class="tile-body">
           <div class="tile-title">Building Map</div>
-          <div class="tile-body">Find any room. See what's happening today.</div>
+          <div class="tile-desc">Find any room. See what's happening today.</div>
+          <span class="tile-cta">Learn More <span class="arrow">&rarr;</span></span>
         </div>
-        <div class="tile-cta">Open the map &rarr;</div>
       </div>
-      <div class="tile deep" onclick="go('classes')">
-        <div class="tile-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-          </svg>
+      <div class="tile" onclick="go('classes')">
+        <div class="tile-media">
+          <img src="assets/images/bible-classes.jpg" alt="Bible Classes" />
+          <span class="tile-pill">9:45am</span>
         </div>
-        <div>
+        <div class="tile-body">
           <div class="tile-title">Bible Classes</div>
-          <div class="tile-body">Sunday, Wednesday, and Small Groups.</div>
+          <div class="tile-desc">Sunday, Wednesday, and Small Groups.</div>
+          <span class="tile-cta">Learn More <span class="arrow">&rarr;</span></span>
         </div>
-        <div class="tile-cta">Browse classes &rarr;</div>
       </div>
-      <div class="tile red" onclick="go('volunteer')">
-        <div class="tile-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
+      <div class="tile" onclick="go('volunteer')">
+        <div class="tile-media">
+          <img src="assets/images/volunteer.jpg" alt="Volunteer at First Colony" />
+          <span class="tile-pill">Serve</span>
         </div>
-        <div>
+        <div class="tile-body">
           <div class="tile-title">Volunteer</div>
-          <div class="tile-body">Jump in, explore opportunities, or take the Spiritual Assessment.</div>
+          <div class="tile-desc">Jump in, explore opportunities, or take the Spiritual Assessment.</div>
+          <span class="tile-cta">Learn More <span class="arrow">&rarr;</span></span>
         </div>
-        <div class="tile-cta">Start serving &rarr;</div>
       </div>
     </div>
   </section>
