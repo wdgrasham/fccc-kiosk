@@ -504,40 +504,85 @@
   }
 
   /* HTML Map Legend — overlays top-right of the map, never blurs.
-     Sized ~2x the original for kiosk readability. */
+     Sized ~2x again for kiosk readability. */
   .map-legend {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 24px;
+    right: 24px;
     background: rgba(255, 255, 255, 0.96);
     border: 1px solid #e5e7eb;
-    border-radius: 14px;
-    padding: 22px 26px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-radius: 18px;
+    padding: 32px 36px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
     z-index: 4;
-    min-width: 320px;
-    max-width: 440px;
+    min-width: 420px;
+    max-width: 540px;
   }
   .map-legend__title {
     font-family: "Alfa Slab One", Georgia, serif;
-    font-size: 26px;
+    font-size: 40px;
     color: var(--deep-teal);
-    margin-bottom: 12px;
+    margin-bottom: 18px;
     letter-spacing: 0.3px;
   }
-  .map-legend__list { display: grid; gap: 6px; }
+  .map-legend__list { display: grid; gap: 10px; }
   .map-legend__item {
-    font-size: 22px;
+    font-size: 30px;
     color: var(--gray);
-    line-height: 1.35;
-    display: flex; gap: 16px;
+    line-height: 1.3;
+    display: flex; gap: 20px;
   }
   .map-legend__abbr {
     font-family: "Open Sans";
     font-weight: 700;
     color: var(--deep-teal);
-    min-width: 68px;
+    min-width: 96px;
   }
+
+  /* ---------- Interactive room tap zones on the map ----------
+     Transparent fills + dashed outline + room-name label. Zones are
+     positioned in percent of .map-frame so they scale with the image. */
+  .room-zone {
+    position: absolute;
+    border: 2px dashed rgba(0, 47, 59, 0.45);
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: background 0.12s ease, border-color 0.12s ease;
+    pointer-events: auto;
+    background: transparent;
+  }
+  .room-zone:hover {
+    background: rgba(0, 140, 150, 0.08);
+    border-color: rgba(10, 93, 103, 0.85);
+  }
+  .room-zone:active { background: rgba(0, 140, 150, 0.16); }
+  .room-zone--active {
+    background: rgba(157, 28, 48, 0.12);
+    border-color: rgba(157, 28, 48, 0.9);
+    border-style: solid;
+  }
+  .room-zone__label {
+    font-family: "Open Sans";
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--deep-teal);
+    background: rgba(255, 255, 255, 0.85);
+    padding: 2px 6px;
+    border-radius: 3px;
+    pointer-events: none;
+    white-space: nowrap;
+    max-width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Floor visibility: hide 2nd-floor zones in default state, hide 1st when 2nd active. */
+  .map-frame .room-zone.floor-2 { display: none; }
+  .map-frame.show-2nd .room-zone.floor-1 { display: none; }
+  .map-frame.show-2nd .room-zone.floor-2 { display: flex; }
   .wing-class-list {
     display: flex; flex-direction: column; gap: 8px;
     margin-top: 10px;
@@ -1279,6 +1324,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('kioskLocName').textContent =
     KIOSK_LOCATION === 'childrens-wing' ? "Children's Wing" : 'Lobby (Main Entrance)';
 
+  renderRoomZones();
   renderStaticQRs();
   renderMapPhoneQR();
 
@@ -1334,7 +1380,7 @@ function positionYouAreHere() {
   if (KIOSK_LOCATION === 'childrens-wing') {
     px = 3000; py = 1600;   // placeholder — tune to A/B corridor spot
   } else {
-    px = 2300; py = 3000;   // Lobby kiosk — south main entrance (43.9% / 76.9%)
+    px = 2350; py = 3050;   // Lobby kiosk — south main entrance (44.9% / 78.2%)
   }
   el.style.left = (px / IMG_W * 100).toFixed(3) + '%';
   el.style.top  = (py / IMG_H * 100).toFixed(3) + '%';
@@ -1387,6 +1433,142 @@ function resetMapView() {
     frame.classList.remove('show-2nd');
     if (btn) btn.textContent = 'Show 2nd Floor';
   }
+  document.querySelectorAll('.room-zone--active').forEach(el => el.classList.remove('room-zone--active'));
+  resetIdle();
+}
+
+/* ----- Interactive room tap zones -----
+   Each entry places a percent-based overlay on .map-frame (5234x3900).
+   Positions are best-guess estimates — Dan will fine-tune. When a zone is
+   tapped, showRoomInfo() fills the left sidebar with today's class info
+   (day-of-week aware). */
+const rooms = [
+  // 1st floor — Gym Wing (F-series rooms clustered on the left side)
+  { id: 'F-100',     label: 'F-100',       floor: '1st', left: 10, top: 60, width: 7, height: 6,
+    sunday: [{ name: 'Connected Class', meta: 'Young adults, single or married, with or without kids', teachers: 'Scott Opaleski, Andy Pace, Drew Dasher' }],
+    wednesday: [{ name: 'FriendSpeak (shared)', meta: 'English conversation practice' }] },
+  { id: 'F-102',     label: 'F-102',       floor: '1st', left: 10, top: 68, width: 7, height: 6,
+    sunday: [{ name: 'Families Class', meta: 'Intergenerational — children welcome', teachers: 'Kristin & Brett Rovey' }] },
+  { id: 'F-104',     label: 'F-104',       floor: '1st', left: 10, top: 52, width: 7, height: 6 },
+  { id: 'F-106',     label: 'F-106',       floor: '1st', left: 10, top: 44, width: 7, height: 6,
+    sunday: [{ name: "Women's Bible Group", meta: 'For women of all ages' }] },
+  { id: 'F-107',     label: 'F-107',       floor: '1st', left: 18, top: 44, width: 7, height: 6,
+    sunday: [{ name: 'Chinese Bible Class', meta: 'Class taught in Mandarin Chinese' }] },
+  { id: 'F-108',     label: 'F-108',       floor: '1st', left: 18, top: 52, width: 7, height: 6,
+    sunday: [{ name: 'International Fellowship', meta: 'For visitors from other countries' }] },
+  { id: 'F-109',     label: 'F-109',       floor: '1st', left: 18, top: 60, width: 7, height: 6 },
+  { id: 'F-111',     label: 'F-111',       floor: '1st', left: 18, top: 68, width: 7, height: 6,
+    sunday: [{ name: 'Young Adults 20s & 30s', meta: 'Early-career singles and young couples' }] },
+  { id: 'F-112',     label: 'F-112',       floor: '1st', left: 18, top: 76, width: 7, height: 6,
+    sunday: [{ name: 'Horizons', meta: 'Empty-nesters and retirees' }] },
+  { id: 'Chapel',    label: 'The Chapel',  floor: '1st', left: 27, top: 60, width: 12, height: 16,
+    sunday: [{ name: 'Chapel Class', meta: 'Traditional verse-by-verse Bible study' }] },
+  { id: 'Gym',       label: 'The Gym',     floor: '1st', left: 27, top: 38, width: 14, height: 18,
+    wednesday: [{ name: 'Student Ministry', meta: '6th–12th grade', time: '6:45 PM' }] },
+
+  // 1st floor — Lobby + Worship Center area (center)
+  { id: 'Lobby',     label: 'The Lobby',   floor: '1st', left: 45, top: 62, width: 12, height: 14,
+    wednesday: [{ name: 'FriendSpeak (shared)', meta: 'English conversation practice' }] },
+  { id: 'Living',    label: 'Living Room', floor: '1st', left: 48, top: 28, width: 10, height: 11,
+    sunday: [{ name: 'Deaf Fellowship', meta: 'ASL interpreted' }],
+    wednesday: [{ name: 'FriendSpeak ESL', meta: 'English as a Second Language' }] },
+  { id: 'Orange',    label: 'Orange Room', floor: '1st', left: 60, top: 28, width: 10, height: 11,
+    wednesday: [{ name: 'Deaf Ministry', meta: 'ASL service', time: '6:00 PM' }] },
+  { id: 'Family',    label: 'Family Room', floor: '1st', left: 52, top: 78, width: 12, height: 10 },
+
+  // 1st floor — right side (2nd-floor-above rooms are shown on 1st floor per map layout)
+  { id: 'East',      label: 'East Room',   floor: '1st', left: 72, top: 34, width: 10, height: 11,
+    sunday: [{ name: 'Deeper Discipleship', meta: 'Experienced Christians seeking deeper study' }],
+    wednesday: [{ name: 'UPLIFT Worship', meta: 'All-ages worship', time: '7:00 PM' }] },
+  { id: 'Studio',    label: 'The Studio',  floor: '1st', left: 84, top: 40, width: 10, height: 14,
+    sunday: [{ name: 'Young Married', meta: 'Newly married couples' }] },
+  { id: 'Conf',      label: 'Conference Room', floor: '1st', left: 82, top: 66, width: 12, height: 10,
+    sunday: [{ name: 'Care Groups', meta: 'Meet monthly — check schedule' }] },
+
+  // 1st floor — Children's wings (large tap zones)
+  { id: 'A-Wing',    label: 'A Wing — Nursery', floor: '1st', left: 70, top: 76, width: 16, height: 16,
+    sunday: [{ name: "Children's Bible Classes", meta: 'Birth–Grade 5 — see Children\'s Check-in' }],
+    wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] },
+  { id: 'B-Wing',    label: 'B Wing — Preschool', floor: '1st', left: 68, top: 14, width: 18, height: 12,
+    sunday: [{ name: "Children's Bible Classes", meta: 'Preschool rooms — see Children\'s Check-in' }],
+    wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] },
+  { id: 'C-Wing',    label: 'C Wing — Elementary', floor: '1st', left: 88, top: 22, width: 10, height: 22,
+    wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] },
+
+  // 2nd floor — D Wing rooms
+  { id: 'D-236',     label: 'D-236',       floor: '2nd', left: 75, top: 38, width: 7, height: 7,
+    wednesday: [{ name: "Women's Group", meta: 'Women of all ages', time: '7:00 PM' }] },
+  { id: 'D-238',     label: 'D-238',       floor: '2nd', left: 75, top: 47, width: 7, height: 7,
+    wednesday: [{ name: "Men's Group", meta: 'Men of all ages', time: '7:00 PM' }] }
+];
+
+function renderRoomZones() {
+  const frame = document.getElementById('mapFrame');
+  if (!frame) return;
+  frame.querySelectorAll('.room-zone').forEach(el => el.remove());
+  rooms.forEach(room => {
+    const el = document.createElement('div');
+    el.className = 'room-zone floor-' + (room.floor === '2nd' ? '2' : '1');
+    el.dataset.roomId = room.id;
+    el.style.left = room.left + '%';
+    el.style.top = room.top + '%';
+    el.style.width = room.width + '%';
+    el.style.height = room.height + '%';
+    const label = document.createElement('span');
+    label.className = 'room-zone__label';
+    label.textContent = room.label;
+    el.appendChild(label);
+    el.addEventListener('click', () => showRoomInfo(room.id));
+    frame.appendChild(el);
+  });
+}
+
+function showRoomInfo(roomId) {
+  const room = rooms.find(r => r.id === roomId);
+  if (!room) return;
+
+  // Highlight the tapped zone.
+  document.querySelectorAll('.room-zone--active').forEach(el => el.classList.remove('room-zone--active'));
+  const zoneEl = document.querySelector('.room-zone[data-room-id="' + roomId + '"]');
+  if (zoneEl) zoneEl.classList.add('room-zone--active');
+
+  const day = currentDay();
+  const info = document.getElementById('wingInfo');
+  let html = '<h3>' + room.label + '</h3>';
+
+  const todayKey = day === 'Sunday' ? 'sunday' : day === 'Wednesday' ? 'wednesday' : null;
+  const todays = todayKey && room[todayKey] ? room[todayKey] : [];
+
+  if (todays.length > 0) {
+    html += '<p class="muted" style="margin-bottom:8px;">Meeting today (' + day + '):</p>';
+    html += '<div class="wing-class-list">';
+    todays.forEach(c => {
+      html += '<div class="wing-class-row"><strong>' + c.name + '</strong>';
+      if (c.time) html += ' · <em>' + c.time + '</em>';
+      if (c.meta) html += '<div class="muted" style="margin-top:2px;">' + c.meta + '</div>';
+      if (c.teachers) html += '<div class="muted" style="margin-top:2px; font-style:italic;">' + c.teachers + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  } else {
+    const others = [];
+    if (room.sunday) room.sunday.forEach(c => others.push({ ...c, day: 'Sunday' }));
+    if (room.wednesday) room.wednesday.forEach(c => others.push({ ...c, day: 'Wednesday' }));
+    if (others.length > 0) {
+      html += '<p class="muted" style="margin-bottom:8px;">No classes here today. On other days:</p>';
+      html += '<div class="wing-class-list">';
+      others.forEach(c => {
+        html += '<div class="wing-class-row"><strong>' + c.name + '</strong> · <em>' + c.day + '</em>';
+        if (c.meta) html += '<div class="muted" style="margin-top:2px;">' + c.meta + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<p class="muted">No regularly scheduled Bible classes in this room.</p>';
+    }
+  }
+
+  info.innerHTML = html;
   resetIdle();
 }
 
