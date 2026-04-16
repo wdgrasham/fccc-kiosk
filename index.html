@@ -318,27 +318,29 @@
   /* ============ BUILDING MAP ============ */
   .map-layout {
     flex: 1 1 auto; min-height: 0;
-    display: grid;
-    grid-template-columns: 1fr minmax(240px, 300px);
+    display: flex;
     gap: 16px;
     overflow: hidden;
   }
   .map-wrap {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
     background: #fff;
     border-radius: 14px;
     padding: 10px;
     box-shadow: var(--shadow);
-    min-height: 0;
     overflow: hidden;
     display: flex;
   }
   .map-viewport {
     flex: 1 1 auto;
+    min-width: 0;
     min-height: 0;
-    width: 100%;
     overflow: hidden;
     background: #fafcfd;
     border-radius: 10px;
+    display: flex;
   }
   #buildingMap {
     width: 100%;
@@ -355,16 +357,27 @@
   }
   .map-loc-chip .dot { width: 9px; height: 9px; background: var(--deep-teal); border-radius: 50%; }
 
-  /* Hotspots — invisible but tappable. Subtle highlight on hover/active. */
+  /* Hotspots — visibly overlaid so visitors can see what's tappable. */
   .hotspot {
-    fill: rgba(67, 190, 172, 0); /* transparent by default */
-    stroke: rgba(157, 28, 48, 0);
-    stroke-width: 6;
+    fill: rgba(67, 190, 172, 0.18);
+    stroke: rgba(0, 47, 59, 0.75);
+    stroke-width: 8;
+    stroke-dasharray: 22 12;
     cursor: pointer;
     transition: fill 0.15s, stroke 0.15s;
   }
-  .hotspot:hover { fill: rgba(67, 190, 172, 0.22); stroke: rgba(10, 93, 103, 0.6); }
-  .hotspot.active { fill: rgba(157, 28, 48, 0.12); stroke: rgba(157, 28, 48, 0.9); }
+  .hotspot:hover { fill: rgba(67, 190, 172, 0.38); stroke: rgba(10, 93, 103, 0.95); stroke-dasharray: none; }
+  .hotspot.active { fill: rgba(157, 28, 48, 0.22); stroke: rgba(157, 28, 48, 0.95); stroke-dasharray: none; }
+  .hotspot-label {
+    pointer-events: none;
+    font-family: "Alfa Slab One", Georgia, serif;
+    fill: var(--deep-teal);
+    paint-order: stroke;
+    stroke: #fff;
+    stroke-width: 6;
+    stroke-linejoin: round;
+    text-anchor: middle;
+  }
 
   .you-here-pulse { animation: pulse 1.6s ease-in-out infinite; }
   @keyframes pulse {
@@ -373,6 +386,7 @@
   }
 
   .map-side {
+    flex: 0 0 280px;
     display: flex; flex-direction: column;
     gap: 14px;
     min-height: 0;
@@ -888,16 +902,40 @@
           <svg id="buildingMap" viewBox="0 0 2880 3888" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
             <image href="map.png" x="0" y="0" width="2880" height="3888" preserveAspectRatio="xMidYMid meet"/>
 
-            <!-- Transparent click hotspots (coords in 2880x3888 PNG space). -->
-            <rect class="hotspot" data-wing="gym"         x="380"  y="110"  width="1100" height="780"  onclick="focusWing('gym')"/>
-            <rect class="hotspot" data-wing="lobby"       x="430"  y="890"  width="1050" height="600"  onclick="focusWing('lobby')"/>
-            <rect class="hotspot" data-wing="worship"     x="230"  y="1400" width="1280" height="800"  onclick="focusWing('worship')"/>
-            <rect class="hotspot" data-wing="secondfloor" x="80"   y="2200" width="1420" height="430"  onclick="focusWing('secondfloor')"/>
-            <rect class="hotspot" data-wing="b"           x="1440" y="80"   width="650"  height="1040" onclick="focusWing('b')"/>
-            <rect class="hotspot" data-wing="b"           x="1540" y="1120" width="750"  height="1020" onclick="focusWing('b')"/>
-            <rect class="hotspot" data-wing="a"           x="1540" y="2140" width="750"  height="900"  onclick="focusWing('a')"/>
-            <rect class="hotspot" data-wing="c"           x="1960" y="1810" width="800"  height="1090" onclick="focusWing('c')"/>
-            <rect class="hotspot" data-wing="d"           x="2060" y="2900" width="780"  height="900"  onclick="focusWing('d')"/>
+            <!-- Click hotspots (coords in 2880x3888 PNG space). Visible teal tint with label. -->
+            <g>
+              <rect class="hotspot" data-wing="gym"         x="345"  y="290"  width="1010" height="605"  onclick="focusWing('gym')"/>
+              <text class="hotspot-label" x="850"  y="600"  font-size="66">GYM WING</text>
+            </g>
+            <g>
+              <rect class="hotspot" data-wing="lobby"       x="460"  y="895"  width="890"  height="465"  onclick="focusWing('lobby')"/>
+              <text class="hotspot-label" x="905"  y="1135" font-size="60">LOBBY</text>
+            </g>
+            <g>
+              <rect class="hotspot" data-wing="worship"     x="230"  y="1285" width="1035" height="855"  onclick="focusWing('worship')"/>
+              <text class="hotspot-label" x="748"  y="1720" font-size="64">WORSHIP CENTER</text>
+            </g>
+            <g>
+              <rect class="hotspot" data-wing="secondfloor" x="175"  y="2020" width="1035" height="430"  onclick="focusWing('secondfloor')"/>
+              <text class="hotspot-label" x="692"  y="2255" font-size="44">SECOND FLOOR</text>
+            </g>
+            <g>
+              <rect class="hotspot" data-wing="b"           x="1095" y="115"  width="465"  height="665"  onclick="focusWing('b')"/>
+              <rect class="hotspot" data-wing="b"           x="1095" y="815"  width="580"  height="745"  onclick="focusWing('b')"/>
+              <text class="hotspot-label" x="1385" y="1210" font-size="58">B WING</text>
+            </g>
+            <g>
+              <rect class="hotspot" data-wing="a"           x="1095" y="1555" width="495"  height="470"  onclick="focusWing('a')"/>
+              <text class="hotspot-label" x="1343" y="1820" font-size="56">A WING</text>
+            </g>
+            <g>
+              <rect class="hotspot" data-wing="c"           x="1730" y="975"  width="745"  height="820"  onclick="focusWing('c')"/>
+              <text class="hotspot-label" x="2103" y="1405" font-size="64">C WING</text>
+            </g>
+            <g>
+              <rect class="hotspot" data-wing="d"           x="1730" y="1865" width="745"  height="1245" onclick="focusWing('d')"/>
+              <text class="hotspot-label" x="2103" y="2510" font-size="64">D WING</text>
+            </g>
 
             <!-- YOU ARE HERE marker — position set by positionYouAreHere() -->
             <g id="youAreHere" class="you-here-pulse">
@@ -1149,9 +1187,9 @@ function positionYouAreHere() {
   const label = g.querySelector('text:nth-of-type(2)');
   let cx, cy;
   if (KIOSK_LOCATION === 'childrens-wing') {
-    cx = 1880; cy = 2500;
+    cx = 1290; cy = 1560; // A/B wing corridor, near Children's Check-in
   } else {
-    cx = 470; cy = 1120;
+    cx = 470; cy = 1120;  // South Main Entrance, lobby kiosk
   }
   circle.setAttribute('cx', cx);
   circle.setAttribute('cy', cy);
@@ -1164,14 +1202,14 @@ function positionYouAreHere() {
 /* ----- Wing zoom + day-aware classes -----
    Viewbox coordinates are in the map.png coordinate space (2880 x 3888). */
 const wings = {
-  gym:         { label: 'The Gym Wing',                     rooms: ['F-100','F-102','F-106','F-107','F-108','F-109','F-111','F-112','The Chapel','Kitchen'], vb: [380, 110, 1100, 780] },
-  lobby:       { label: 'The Lobby',                        rooms: ['Start Here', "Children's Check-in", 'Welcome Center'],                                   vb: [350, 800, 1200, 700] },
-  worship:     { label: 'Worship Center',                   rooms: ['Family Room', 'Living Room'],                                                            vb: [180, 1380, 1380, 850] },
-  secondfloor: { label: 'Second Floor (above Worship Center)', rooms: ['The Studio', 'East Room', 'Orange Room'],                                              vb: [50,  2180, 1480, 480] },
-  a:           { label: 'A Wing — Nursery (1st Floor)',     rooms: ['132','134','136','138','140','142','144','146',"Children's Check-in"],                   vb: [1500, 2100, 820, 960] },
-  b:           { label: 'B Wing — Preschool',               rooms: ['102','104','106','108','110','112','114','116','118','120','122','156','160','162','164','166','168','170','172','174','176','178'], vb: [1400, 60, 920, 2100] },
-  c:           { label: 'C Wing — Elementary (1st Floor)',  rooms: ['202','204','206','208','210','214','216','218','220','222','North Entry'],                vb: [1910, 1770, 880, 1160] },
-  d:           { label: 'D Wing — Youth (2nd Floor)',       rooms: ['232','234','236','238','240','242','244','Conference Room','Church Receptionist'],        vb: [2010, 2850, 850, 970] }
+  gym:         { label: 'The Gym Wing',                     rooms: ['F-100','F-102','F-104','F-106','F-107','F-108','F-109','F-111','F-112','The Chapel','Kitchen'], vb: [280, 240, 1140, 700] },
+  lobby:       { label: 'The Lobby',                        rooms: ['Start Here', "Children's Check-in", 'Welcome Center'],                                           vb: [400, 800, 1010, 640] },
+  worship:     { label: 'Worship Center',                   rooms: ['Family Room', 'Living Room'],                                                                    vb: [180, 1250, 1130, 950] },
+  secondfloor: { label: 'Second Floor (above Worship Center)', rooms: ['The Studio', 'East Room', 'Orange Room'],                                                      vb: [120, 1970, 1155, 570] },
+  a:           { label: 'A Wing — Nursery (1st Floor)',     rooms: ['132','134','136','138','140','142','144','146',"Children's Check-in"],                           vb: [1060, 1520, 580, 550] },
+  b:           { label: 'B Wing — Preschool',               rooms: ['102','104','106','108','110','112','114','116','118','120','122','156','160','162','164','166','168','170','172','174','176','178'], vb: [1050, 80, 700, 1520] },
+  c:           { label: 'C Wing — Elementary (1st Floor)',  rooms: ['202','204','206','208','210','214','216','218','220','222','North Entry'],                       vb: [1680, 930, 830, 920] },
+  d:           { label: 'D Wing — Youth (2nd Floor)',       rooms: ['232','234','236','238','240','242','244','Conference Room','Church Receptionist'],                vb: [1680, 1820, 830, 1360] }
 };
 
 function focusWing(key) {
