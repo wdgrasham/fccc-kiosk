@@ -194,6 +194,30 @@
   }
   .tile-cta .arrow { font-size: 18px; line-height: 1; }
 
+  /* New Here? tile — teal gradient overlay + centered Alfa Slab One title
+     baked over the hero photo, matching the firstcolonychurch.org/next-steps/new-here/ treatment. */
+  .tile--overlay .tile-media::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(rgba(0, 140, 149, 0.55), rgba(10, 93, 103, 0.65));
+    pointer-events: none;
+  }
+  .tile--overlay .tile-media::before {
+    content: "New Here?";
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: "Alfa Slab One", Georgia, serif;
+    font-size: 48px;
+    color: #fff;
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+  @media (max-width: 900px) {
+    .tile--overlay .tile-media::before { font-size: 36px; }
+  }
+
   /* ============ SECTION HEADER (sub screens) ============ */
   .section-head { margin-bottom: 14px; flex: 0 0 auto; }
   .section-head h2 { margin-bottom: 4px; }
@@ -348,6 +372,7 @@
   }
 
   /* ============ BUILDING MAP ============ */
+  /* Sidebar on LEFT, map takes the full remaining width on the RIGHT. */
   .map-layout {
     flex: 1 1 auto; min-height: 0;
     display: flex;
@@ -389,42 +414,24 @@
   }
   .map-loc-chip .dot { width: 9px; height: 9px; background: var(--deep-teal); border-radius: 50%; }
 
-  /* Hotspots — visibly overlaid so visitors can see what's tappable. */
-  .hotspot {
-    fill: rgba(67, 190, 172, 0.18);
-    stroke: rgba(0, 47, 59, 0.75);
-    stroke-width: 8;
-    stroke-dasharray: 22 12;
-    cursor: pointer;
-    transition: fill 0.15s, stroke 0.15s;
-  }
-  .hotspot:hover { fill: rgba(67, 190, 172, 0.38); stroke: rgba(10, 93, 103, 0.95); stroke-dasharray: none; }
-  .hotspot.active { fill: rgba(157, 28, 48, 0.22); stroke: rgba(157, 28, 48, 0.95); stroke-dasharray: none; }
-  .hotspot-label {
-    pointer-events: none;
-    font-family: "Alfa Slab One", Georgia, serif;
-    fill: var(--deep-teal);
-    paint-order: stroke;
-    stroke: #fff;
-    stroke-width: 6;
-    stroke-linejoin: round;
-    text-anchor: middle;
-  }
-
   .you-here-pulse { animation: pulse 1.6s ease-in-out infinite; }
   @keyframes pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.45; }
   }
 
+  /* Floor-2 overlay — hidden by default, toggled by the "Show 2nd Floor" button. */
+  #floor2Overlay { display: none; }
+  #floor2Overlay.visible { display: inline; }
+
   .map-side {
-    flex: 0 0 280px;
+    flex: 0 0 340px;
     display: flex; flex-direction: column;
     gap: 14px;
     min-height: 0;
     overflow: hidden;
   }
-  .map-side .qr-block { align-self: center; }
+  .map-side .qr-block { align-self: stretch; max-width: none; }
   .wing-info {
     background: #fff; padding: 16px 18px; border-radius: 12px;
     box-shadow: var(--shadow);
@@ -492,20 +499,18 @@
       <div class="sub">Tap a card below to explore</div>
     </div>
     <div class="home-grid">
-      <div class="tile" onclick="go('new-here')">
+      <div class="tile tile--overlay" onclick="go('new-here')">
         <div class="tile-media">
-          <img src="assets/images/new-here.jpg" alt="Sunday worship at First Colony" />
-          <span class="tile-pill">Welcome</span>
+          <img src="assets/images/new-here-hero.jpg" alt="New Here at First Colony" />
         </div>
         <div class="tile-body">
-          <div class="tile-title">New Here?</div>
           <div class="tile-desc">Learn More about First Colony</div>
           <span class="tile-cta">Learn More <span class="arrow">&rarr;</span></span>
         </div>
       </div>
       <div class="tile" onclick="go('map')">
         <div class="tile-media">
-          <img src="map.png" alt="First Colony building map" />
+          <img src="Building.png" alt="First Colony building map" />
           <span class="tile-pill">Navigate</span>
         </div>
         <div class="tile-body">
@@ -927,71 +932,22 @@
     <div class="controls">
       <button class="btn secondary" onclick="goBack()"><span class="arrow">&larr;</span> Back</button>
       <button class="btn ghost" onclick="goHome()">Home</button>
-      <button class="btn ghost" onclick="resetMapZoom()">Reset view</button>
+      <button class="btn ghost" id="floor2Toggle" onclick="toggleFloor2()">Show 2nd Floor</button>
     </div>
     <div class="section-head" style="display:flex; justify-content:space-between; align-items:flex-end; gap:16px;">
       <div>
         <h2>Building Map</h2>
-        <p class="lede">Tap a wing to zoom in and see what's meeting today.</p>
+        <p class="lede">Find any room. See what's meeting today.</p>
       </div>
       <div class="map-loc-chip"><span class="dot"></span>You are here: <span id="kioskLocName">Lobby</span></div>
     </div>
 
     <div class="map-layout">
-      <div class="map-wrap">
-        <div class="map-viewport">
-          <svg id="buildingMap" viewBox="0 0 2880 3888" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-            <image href="map.png" x="0" y="0" width="2880" height="3888" preserveAspectRatio="xMidYMid meet"/>
-
-            <!-- Click hotspots (coords in 2880x3888 PNG space). Visible teal tint with label. -->
-            <g>
-              <rect class="hotspot" data-wing="gym"         x="345"  y="290"  width="1010" height="605"  onclick="focusWing('gym')"/>
-              <text class="hotspot-label" x="850"  y="600"  font-size="66">GYM WING</text>
-            </g>
-            <g>
-              <rect class="hotspot" data-wing="lobby"       x="460"  y="895"  width="890"  height="465"  onclick="focusWing('lobby')"/>
-              <text class="hotspot-label" x="905"  y="1135" font-size="60">LOBBY</text>
-            </g>
-            <g>
-              <rect class="hotspot" data-wing="worship"     x="230"  y="1285" width="1035" height="855"  onclick="focusWing('worship')"/>
-              <text class="hotspot-label" x="748"  y="1720" font-size="64">WORSHIP CENTER</text>
-            </g>
-            <g>
-              <rect class="hotspot" data-wing="secondfloor" x="175"  y="2020" width="1035" height="430"  onclick="focusWing('secondfloor')"/>
-              <text class="hotspot-label" x="692"  y="2255" font-size="44">SECOND FLOOR</text>
-            </g>
-            <g>
-              <rect class="hotspot" data-wing="b"           x="1095" y="115"  width="465"  height="665"  onclick="focusWing('b')"/>
-              <rect class="hotspot" data-wing="b"           x="1095" y="815"  width="580"  height="745"  onclick="focusWing('b')"/>
-              <text class="hotspot-label" x="1385" y="1210" font-size="58">B WING</text>
-            </g>
-            <g>
-              <rect class="hotspot" data-wing="a"           x="1095" y="1555" width="495"  height="470"  onclick="focusWing('a')"/>
-              <text class="hotspot-label" x="1343" y="1820" font-size="56">A WING</text>
-            </g>
-            <g>
-              <rect class="hotspot" data-wing="c"           x="1730" y="975"  width="745"  height="820"  onclick="focusWing('c')"/>
-              <text class="hotspot-label" x="2103" y="1405" font-size="64">C WING</text>
-            </g>
-            <g>
-              <rect class="hotspot" data-wing="d"           x="1730" y="1865" width="745"  height="1245" onclick="focusWing('d')"/>
-              <text class="hotspot-label" x="2103" y="2510" font-size="64">D WING</text>
-            </g>
-
-            <!-- YOU ARE HERE marker — position set by positionYouAreHere() -->
-            <g id="youAreHere" class="you-here-pulse">
-              <circle cx="470" cy="1120" r="70" fill="#9d1c30" stroke="#fff" stroke-width="10"/>
-              <text x="470" y="1150" text-anchor="middle" font-size="72" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
-              <text x="470" y="1260" text-anchor="middle" font-size="44" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
-            </g>
-          </svg>
-        </div>
-      </div>
-
+      <!-- Sidebar on LEFT: location badge, wing info, QR -->
       <aside class="map-side">
         <div class="wing-info" id="wingInfo">
-          <h3>Tap a wing</h3>
-          <p class="muted">Rooms and classes meeting today will appear here.</p>
+          <h3>Building Map</h3>
+          <p class="muted">You're in the Lobby (south main entrance). Tap a class below to see where to go, or scan the QR to take the map with you.</p>
         </div>
         <div class="qr-block">
           <div class="qr-code" id="mapPhoneQR"></div>
@@ -999,6 +955,27 @@
           <div class="qr-hint">Scan to open on your phone.</div>
         </div>
       </aside>
+
+      <!-- Map on RIGHT: Building.png is 8864 x 4480 landscape. -->
+      <div class="map-wrap">
+        <div class="map-viewport">
+          <svg id="buildingMap" viewBox="0 0 8864 4480" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            <image href="Building.png" x="0" y="0" width="8864" height="4480" preserveAspectRatio="xMidYMid meet"/>
+
+            <!-- 2nd Floor overlay — hidden by default, toggled on via "Show 2nd Floor" button.
+                 Zones/art will be added once Dan provides the 2nd-floor layout. -->
+            <g id="floor2Overlay"></g>
+
+            <!-- YOU ARE HERE marker — position set by positionYouAreHere().
+                 Coords are approximate for the new landscape image; Dan will tune. -->
+            <g id="youAreHere" class="you-here-pulse">
+              <circle cx="1500" cy="2800" r="140" fill="#9d1c30" stroke="#fff" stroke-width="18"/>
+              <text x="1500" y="2855" text-anchor="middle" font-size="150" font-weight="700" fill="#fff" font-family="Alfa Slab One, Georgia, serif">K</text>
+              <text x="1500" y="3050" text-anchor="middle" font-size="90" font-weight="700" fill="#9d1c30" font-family="Open Sans, sans-serif">YOU ARE HERE</text>
+            </g>
+          </svg>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1064,7 +1041,6 @@ function resetIdle() {
   if (idleTimer) clearTimeout(idleTimer);
   idleTimer = setTimeout(() => {
     goHome();
-    resetMapZoom();
   }, IDLE_MS);
 }
 ['click', 'touchstart', 'pointerdown', 'keydown'].forEach(evt => {
@@ -1242,18 +1218,29 @@ function positionYouAreHere() {
   const circle = g.querySelector('circle');
   const kText = g.querySelector('text:nth-of-type(1)');
   const label = g.querySelector('text:nth-of-type(2)');
+  // Coords are in the Building.png coordinate space (8864 x 4480 landscape).
+  // These are approximate — Dan will tune once the map is on-screen.
   let cx, cy;
   if (KIOSK_LOCATION === 'childrens-wing') {
-    cx = 1290; cy = 1560; // A/B wing corridor, near Children's Check-in
+    cx = 4200; cy = 2100;   // placeholder — tune to actual A/B corridor spot
   } else {
-    cx = 470; cy = 1120;  // South Main Entrance, lobby kiosk
+    cx = 1500; cy = 2800;   // placeholder — tune to south main entrance
   }
   circle.setAttribute('cx', cx);
   circle.setAttribute('cy', cy);
   kText.setAttribute('x', cx);
-  kText.setAttribute('y', cy + 28);
+  kText.setAttribute('y', cy + 55);
   label.setAttribute('x', cx);
-  label.setAttribute('y', cy + 140);
+  label.setAttribute('y', cy + 250);
+}
+
+/* Toggle the 2nd-floor overlay layer. Button label flips. */
+function toggleFloor2() {
+  const layer = document.getElementById('floor2Overlay');
+  const btn = document.getElementById('floor2Toggle');
+  const on = layer.classList.toggle('visible');
+  btn.textContent = on ? 'Hide 2nd Floor' : 'Show 2nd Floor';
+  resetIdle();
 }
 
 /* ----- Wing zoom + day-aware classes -----
@@ -1269,16 +1256,11 @@ const wings = {
   d:           { label: 'D Wing — Youth (2nd Floor)',       rooms: ['232','234','236','238','240','242','244','Conference Room','Church Receptionist'],                vb: [1680, 1820, 830, 1360] }
 };
 
+/* Update the sidebar wing-info panel with info about a wing.
+   No map zoom or hotspot highlighting — the map is static. */
 function focusWing(key) {
   const w = wings[key];
   if (!w) return;
-  zoomTo(w.vb);
-
-  // Highlight active hotspots (there may be multiple hotspots for the same wing).
-  document.querySelectorAll('.hotspot').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.hotspot[data-wing="' + key + '"]').forEach(el => el.classList.add('active'));
-
-  // Show wing info
   const info = document.getElementById('wingInfo');
   const classesToday = classesInWingToday(key);
   let html = '<h3>' + w.label + '</h3>';
@@ -1295,7 +1277,6 @@ function focusWing(key) {
     html += '<p class="muted" style="margin-top:10px;"><em>No classes scheduled today in this wing.</em></p>';
   }
   info.innerHTML = html;
-
   resetIdle();
 }
 
@@ -1325,37 +1306,6 @@ function classesInWingToday(wingKey) {
   return list;
 }
 
-const MAP_FULL_VB = [0, 0, 2880, 3888];
-function zoomTo(vb) {
-  // Animate viewBox toward target [x,y,w,h] in map.png space with a small pad around it.
-  const [x, y, w, h] = vb;
-  const pad = 80;
-  animateViewBox([x - pad, y - pad, w + pad * 2, h + pad * 2]);
-}
-let vbAnim = null;
-function animateViewBox(target) {
-  const svg = document.getElementById('buildingMap');
-  const current = (svg.getAttribute('viewBox') || MAP_FULL_VB.join(' ')).split(/\s+/).map(Number);
-  const start = performance.now();
-  const dur = 450;
-  if (vbAnim) cancelAnimationFrame(vbAnim);
-  function frame(now) {
-    const t = Math.min(1, (now - start) / dur);
-    const e = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; // easeInOutQuad
-    const vb = current.map((v, i) => v + (target[i] - v) * e);
-    svg.setAttribute('viewBox', vb.join(' '));
-    if (t < 1) vbAnim = requestAnimationFrame(frame);
-  }
-  vbAnim = requestAnimationFrame(frame);
-}
-function resetMapZoom() {
-  animateViewBox(MAP_FULL_VB);
-  document.querySelectorAll('.hotspot').forEach(el => el.classList.remove('active'));
-  const info = document.getElementById('wingInfo');
-  if (info) {
-    info.innerHTML = '<h3>Tap a wing</h3><p class="muted">Rooms and classes meeting today will appear here.</p>';
-  }
-}
 </script>
 </body>
 </html>
