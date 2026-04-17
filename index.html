@@ -539,50 +539,39 @@
     min-width: 96px;
   }
 
-  /* ---------- Interactive room tap zones on the map ----------
-     Transparent fills + dashed outline + room-name label. Zones are
-     positioned in percent of .map-frame so they scale with the image. */
+  /* ---------- Interactive room tap zones (dashed circles) ----------
+     Each zone is a transparent circle with a dashed outline, centered
+     over the room on the map. No labels — the map already shows names.
+     Positioned in percent of .map-frame. aspect-ratio: 1 ensures a
+     perfect circle regardless of container aspect. */
   .room-zone {
     position: absolute;
-    border: 2px dashed rgba(0, 47, 59, 0.45);
-    border-radius: 6px;
+    aspect-ratio: 1;
+    border: 2.5px dashed rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     z-index: 2;
-    transition: background 0.12s ease, border-color 0.12s ease;
     pointer-events: auto;
     background: transparent;
+    transform: translate(-50%, -50%);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
   .room-zone:hover {
-    background: rgba(0, 140, 150, 0.08);
-    border-color: rgba(10, 93, 103, 0.85);
+    border-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 0 12px 2px rgba(0, 140, 150, 0.35);
   }
-  .room-zone:active { background: rgba(0, 140, 150, 0.16); }
+  .room-zone:active {
+    box-shadow: 0 0 16px 4px rgba(0, 140, 150, 0.45);
+  }
   .room-zone--active {
-    background: rgba(157, 28, 48, 0.12);
-    border-color: rgba(157, 28, 48, 0.9);
+    border-color: rgba(157, 28, 48, 0.95);
     border-style: solid;
+    box-shadow: 0 0 14px 3px rgba(157, 28, 48, 0.35);
   }
-  .room-zone__label {
-    font-family: "Open Sans";
-    font-weight: 700;
-    font-size: 13px;
-    color: var(--deep-teal);
-    background: rgba(255, 255, 255, 0.85);
-    padding: 2px 6px;
-    border-radius: 3px;
-    pointer-events: none;
-    white-space: nowrap;
-    max-width: 95%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  /* Floor visibility: hide 2nd-floor zones in default state, hide 1st when 2nd active. */
+  /* Floor visibility: hide 2nd-floor zones by default, swap on toggle. */
   .map-frame .room-zone.floor-2 { display: none; }
   .map-frame.show-2nd .room-zone.floor-1 { display: none; }
-  .map-frame.show-2nd .room-zone.floor-2 { display: flex; }
+  .map-frame.show-2nd .room-zone.floor-2 { display: block; }
   .wing-class-list {
     display: flex; flex-direction: column; gap: 8px;
     margin-top: 10px;
@@ -1437,69 +1426,65 @@ function resetMapView() {
   resetIdle();
 }
 
-/* ----- Interactive room tap zones -----
-   Each entry places a percent-based overlay on .map-frame (5234x3900).
-   Positions are best-guess estimates — Dan will fine-tune. When a zone is
-   tapped, showRoomInfo() fills the left sidebar with today's class info
-   (day-of-week aware). */
+/* ----- Interactive room tap zones (dashed circles) -----
+   ONLY rooms hosting Bible classes. No labels — the map already shows names.
+   Each entry: left/top = center of circle (%), size = diameter (% of frame width).
+   Positions from specs/BOB-BUILD-BRIEF.md, OCR-confirmed where noted. */
 const rooms = [
-  // 1st floor — Gym Wing (F-series rooms clustered on the left side)
-  { id: 'F-100',     label: 'F-100',       floor: '1st', left: 10, top: 60, width: 7, height: 6,
+  // 1st floor — Gym Wing F-series
+  { id: 'F-100', floor: '1st', left: 40.7, top: 85.5, size: 5,
     sunday: [{ name: 'Connected Class', meta: 'Young adults, single or married, with or without kids', teachers: 'Scott Opaleski, Andy Pace, Drew Dasher' }],
-    wednesday: [{ name: 'FriendSpeak (shared)', meta: 'English conversation practice' }] },
-  { id: 'F-102',     label: 'F-102',       floor: '1st', left: 10, top: 68, width: 7, height: 6,
+    wednesday: [{ name: 'FriendSpeak', meta: 'English conversation practice' }] },
+  { id: 'F-102', floor: '1st', left: 44.9, top: 91.0, size: 5,
     sunday: [{ name: 'Families Class', meta: 'Intergenerational — children welcome', teachers: 'Kristin & Brett Rovey' }] },
-  { id: 'F-104',     label: 'F-104',       floor: '1st', left: 10, top: 52, width: 7, height: 6 },
-  { id: 'F-106',     label: 'F-106',       floor: '1st', left: 10, top: 44, width: 7, height: 6,
+  { id: 'F-106', floor: '1st', left: 21.0, top: 87.2, size: 5,
     sunday: [{ name: "Women's Bible Group", meta: 'For women of all ages' }] },
-  { id: 'F-107',     label: 'F-107',       floor: '1st', left: 18, top: 44, width: 7, height: 6,
+  { id: 'F-107', floor: '1st', left: 21.0, top: 84.6, size: 5,
     sunday: [{ name: 'Chinese Bible Class', meta: 'Class taught in Mandarin Chinese' }] },
-  { id: 'F-108',     label: 'F-108',       floor: '1st', left: 18, top: 52, width: 7, height: 6,
+  { id: 'F-108', floor: '1st', left: 21.3, top: 82.5, size: 5,
     sunday: [{ name: 'International Fellowship', meta: 'For visitors from other countries' }] },
-  { id: 'F-109',     label: 'F-109',       floor: '1st', left: 18, top: 60, width: 7, height: 6 },
-  { id: 'F-111',     label: 'F-111',       floor: '1st', left: 18, top: 68, width: 7, height: 6,
+  { id: 'F-111', floor: '1st', left: 20.1, top: 59.0, size: 5,
     sunday: [{ name: 'Young Adults 20s & 30s', meta: 'Early-career singles and young couples' }] },
-  { id: 'F-112',     label: 'F-112',       floor: '1st', left: 18, top: 76, width: 7, height: 6,
+  { id: 'F-112', floor: '1st', left: 25.8, top: 55.1, size: 5,
     sunday: [{ name: 'Horizons', meta: 'Empty-nesters and retirees' }] },
-  { id: 'Chapel',    label: 'The Chapel',  floor: '1st', left: 27, top: 60, width: 12, height: 16,
+
+  // 1st floor — Chapel + Gym (larger circles)
+  { id: 'Chapel', floor: '1st', left: 30.0, top: 52.5, size: 9,
     sunday: [{ name: 'Chapel Class', meta: 'Traditional verse-by-verse Bible study' }] },
-  { id: 'Gym',       label: 'The Gym',     floor: '1st', left: 27, top: 38, width: 14, height: 18,
+  { id: 'Gym',    floor: '1st', left: 29.7, top: 75.7, size: 11,
     wednesday: [{ name: 'Student Ministry', meta: '6th–12th grade', time: '6:45 PM' }] },
 
-  // 1st floor — Lobby + Worship Center area (center)
-  { id: 'Lobby',     label: 'The Lobby',   floor: '1st', left: 45, top: 62, width: 12, height: 14,
-    wednesday: [{ name: 'FriendSpeak (shared)', meta: 'English conversation practice' }] },
-  { id: 'Living',    label: 'Living Room', floor: '1st', left: 48, top: 28, width: 10, height: 11,
+  // 1st floor — Worship Center / right-side rooms
+  { id: 'Living',  floor: '1st', left: 72.6, top: 38.5, size: 6,
     sunday: [{ name: 'Deaf Fellowship', meta: 'ASL interpreted' }],
     wednesday: [{ name: 'FriendSpeak ESL', meta: 'English as a Second Language' }] },
-  { id: 'Orange',    label: 'Orange Room', floor: '1st', left: 60, top: 28, width: 10, height: 11,
-    wednesday: [{ name: 'Deaf Ministry', meta: 'ASL service', time: '6:00 PM' }] },
-  { id: 'Family',    label: 'Family Room', floor: '1st', left: 52, top: 78, width: 12, height: 10 },
-
-  // 1st floor — right side (2nd-floor-above rooms are shown on 1st floor per map layout)
-  { id: 'East',      label: 'East Room',   floor: '1st', left: 72, top: 34, width: 10, height: 11,
+  { id: 'East',    floor: '1st', left: 84.1, top: 65.4, size: 6,
     sunday: [{ name: 'Deeper Discipleship', meta: 'Experienced Christians seeking deeper study' }],
     wednesday: [{ name: 'UPLIFT Worship', meta: 'All-ages worship', time: '7:00 PM' }] },
-  { id: 'Studio',    label: 'The Studio',  floor: '1st', left: 84, top: 40, width: 10, height: 14,
+  { id: 'Studio',  floor: '1st', left: 89.8, top: 65.4, size: 6,
     sunday: [{ name: 'Young Married', meta: 'Newly married couples' }] },
-  { id: 'Conf',      label: 'Conference Room', floor: '1st', left: 82, top: 66, width: 12, height: 10,
+  { id: 'Orange',  floor: '1st', left: 89.8, top: 46.2, size: 6,
+    wednesday: [{ name: 'Deaf Ministry', meta: 'ASL service', time: '6:00 PM' }] },
+  { id: 'Conf',    floor: '1st', left: 65.0, top: 55.0, size: 6,
     sunday: [{ name: 'Care Groups', meta: 'Meet monthly — check schedule' }] },
 
-  // 1st floor — Children's wings (large tap zones)
-  { id: 'A-Wing',    label: 'A Wing — Nursery', floor: '1st', left: 70, top: 76, width: 16, height: 16,
-    sunday: [{ name: "Children's Bible Classes", meta: 'Birth–Grade 5 — see Children\'s Check-in' }],
+  // 1st floor — Children's wings (larger circles covering whole wing)
+  { id: 'B-Wing', floor: '1st', left: 38.0, top: 25.0, size: 16,
+    sunday: [{ name: "Children's Bible Classes", meta: 'Preschool — see Children\'s Check-in' }],
     wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] },
-  { id: 'B-Wing',    label: 'B Wing — Preschool', floor: '1st', left: 68, top: 14, width: 18, height: 12,
-    sunday: [{ name: "Children's Bible Classes", meta: 'Preschool rooms — see Children\'s Check-in' }],
-    wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] },
-  { id: 'C-Wing',    label: 'C Wing — Elementary', floor: '1st', left: 88, top: 22, width: 10, height: 22,
+  { id: 'A-Wing', floor: '1st', left: 58.0, top: 25.0, size: 16,
+    sunday: [{ name: "Children's Bible Classes", meta: 'Nursery — see Children\'s Check-in' }],
     wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] },
 
   // 2nd floor — D Wing rooms
-  { id: 'D-236',     label: 'D-236',       floor: '2nd', left: 75, top: 38, width: 7, height: 7,
+  { id: 'D-236', floor: '2nd', left: 75.0, top: 50.0, size: 6,
     wednesday: [{ name: "Women's Group", meta: 'Women of all ages', time: '7:00 PM' }] },
-  { id: 'D-238',     label: 'D-238',       floor: '2nd', left: 75, top: 47, width: 7, height: 7,
-    wednesday: [{ name: "Men's Group", meta: 'Men of all ages', time: '7:00 PM' }] }
+  { id: 'D-238', floor: '2nd', left: 75.0, top: 58.0, size: 6,
+    wednesday: [{ name: "Men's Group", meta: 'Men of all ages', time: '7:00 PM' }] },
+
+  // 2nd floor — C Wing (larger circle)
+  { id: 'C-Wing', floor: '2nd', left: 88.0, top: 40.0, size: 15,
+    wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] }
 ];
 
 function renderRoomZones() {
@@ -1512,12 +1497,7 @@ function renderRoomZones() {
     el.dataset.roomId = room.id;
     el.style.left = room.left + '%';
     el.style.top = room.top + '%';
-    el.style.width = room.width + '%';
-    el.style.height = room.height + '%';
-    const label = document.createElement('span');
-    label.className = 'room-zone__label';
-    label.textContent = room.label;
-    el.appendChild(label);
+    el.style.width = room.size + '%';
     el.addEventListener('click', () => showRoomInfo(room.id));
     frame.appendChild(el);
   });
