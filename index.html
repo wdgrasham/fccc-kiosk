@@ -906,7 +906,7 @@
         <h3>Children's Classes</h3>
         <p>Classes for every age in the A, B, and C wings.</p>
       </div>
-      <div class="hub-card" onclick="focusMapRoom('D-Wing', '2nd')">
+      <div class="hub-card" onclick="focusMapRoom('D-Wing-label,D-Wing-area', '2nd')">
         <div class="when">Sunday</div>
         <h3>Student Ministry</h3>
         <p>6th–12th grade meet in D Wing (2nd floor).</p>
@@ -1555,9 +1555,10 @@ const rooms = [
   { id: '234', floor: '2nd', ...px(2980,815,175) },
   { id: '236', floor: '2nd', ...px(3215,815,175),
     wednesday: [{ name: "Women's Group", meta: 'Discussion-based', time: '7:00 PM' }] },
-  // D Wing label rectangle — Student Ministry navigates here
-  { id: 'D-Wing', floor: '2nd', shape: 'rect', left: 2375/IMG_W*100, top: 90/IMG_H*100, width: 510/IMG_W*100, height: 105/IMG_H*100,
+  // D Wing label + full wing area — Student Ministry highlights both
+  { id: 'D-Wing-label', floor: '2nd', shape: 'rect', left: 2375/IMG_W*100, top: 90/IMG_H*100, width: 510/IMG_W*100, height: 105/IMG_H*100,
     sunday: [{ name: 'Student Ministry', meta: '6th–12th grade meet in D Wing' }] },
+  { id: 'D-Wing-area', floor: '2nd', shape: 'rect', left: 2011/IMG_W*100, top: 224/IMG_H*100, width: (3362-2011)/IMG_W*100, height: (972-224)/IMG_H*100 },
   // ═══ 2ND FLOOR — B Wing upper rooms (smaller circles) ═══
   { id: '156', floor: '2nd', ...px(2020,1880,150) },
   { id: '158', floor: '2nd', ...px(1880,1920,150) },
