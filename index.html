@@ -1227,13 +1227,12 @@ const wednesdayAdult = [
   {
     name: 'FriendSpeak',
     room: 'Lobby & F-100',
-    roomId: 'F100',
+    roomId: 'The Lobby,F100',
     floor: '1st',
     teachers: 'Grant Wright, Sarah Smith',
     desc: 'One-on-one English conversation. Training required before your first session.',
     special: true,
-    sessions: ['6–7 PM', '7–8 PM', '8–9 PM'],
-    detailScreen: 'friendspeak'
+    sessions: ['6–7 PM', '7–8 PM', '8–9 PM']
   },
   { name: 'FriendSpeak ESL', room: 'Living Room', roomId: 'Living Room', floor: '1st', teachers: 'Janet Gallman', desc: '7–8 PM only.' },
   { name: 'Deaf Ministry — Signing Worship Songs', room: 'Orange Room', roomId: 'Orange Room', floor: '1st', teachers: 'Benton Dibrell', desc: 'Meets 6–7 PM.' }
@@ -1583,27 +1582,39 @@ function renderRoomZones() {
   });
 }
 
-function showRoomInfo(roomId) {
-  const room = rooms.find(r => r.id === roomId);
-  if (!room) return;
+/* Accepts a single roomId string OR an array of roomId strings.
+   Highlights all matching circles and shows combined class info. */
+function showRoomInfo(roomIdOrIds) {
+  const ids = Array.isArray(roomIdOrIds) ? roomIdOrIds : [roomIdOrIds];
+  const matched = ids.map(id => rooms.find(r => r.id === id)).filter(Boolean);
+  if (matched.length === 0) return;
 
-  // Highlight the tapped zone.
   document.querySelectorAll('.room-zone--active').forEach(el => el.classList.remove('room-zone--active'));
-  const zoneEl = document.querySelector('.room-zone[data-room-id="' + roomId + '"]');
-  if (zoneEl) zoneEl.classList.add('room-zone--active');
+  ids.forEach(id => {
+    const zoneEl = document.querySelector('.room-zone[data-room-id="' + id + '"]');
+    if (zoneEl) zoneEl.classList.add('room-zone--active');
+  });
 
   const day = currentDay();
-  const info = document.getElementById('wingInfo');
-  let html = '<h3>' + room.label + '</h3>';
-
   const todayKey = day === 'Sunday' ? 'sunday' : day === 'Wednesday' ? 'wednesday' : null;
-  const todays = todayKey && room[todayKey] ? room[todayKey] : [];
+  const info = document.getElementById('wingInfo');
+  let html = '<h3>' + matched.map(r => r.id).join(' & ') + '</h3>';
 
-  if (todays.length > 0) {
+  const allToday = [];
+  const allOther = [];
+  matched.forEach(room => {
+    const todays = todayKey && room[todayKey] ? room[todayKey] : [];
+    todays.forEach(c => allToday.push({ ...c, roomLabel: room.id }));
+    if (room.sunday) room.sunday.forEach(c => allOther.push({ ...c, day: 'Sunday', roomLabel: room.id }));
+    if (room.wednesday) room.wednesday.forEach(c => allOther.push({ ...c, day: 'Wednesday', roomLabel: room.id }));
+  });
+
+  if (allToday.length > 0) {
     html += '<p class="muted" style="margin-bottom:8px;">Meeting today (' + day + '):</p>';
     html += '<div class="wing-class-list">';
-    todays.forEach(c => {
+    allToday.forEach(c => {
       html += '<div class="wing-class-row"><strong>' + c.name + '</strong>';
+      if (matched.length > 1) html += ' · <em>' + c.roomLabel + '</em>';
       if (c.time) html += ' · <em>' + c.time + '</em>';
       if (c.meta) html += '<div class="muted" style="margin-top:2px;">' + c.meta + '</div>';
       if (c.teachers) html += '<div class="muted" style="margin-top:2px; font-style:italic;">' + c.teachers + '</div>';
@@ -1611,13 +1622,11 @@ function showRoomInfo(roomId) {
     });
     html += '</div>';
   } else {
-    const others = [];
-    if (room.sunday) room.sunday.forEach(c => others.push({ ...c, day: 'Sunday' }));
-    if (room.wednesday) room.wednesday.forEach(c => others.push({ ...c, day: 'Wednesday' }));
-    if (others.length > 0) {
+    const unique = allOther.filter((c, i, a) => a.findIndex(x => x.name === c.name && x.day === c.day) === i);
+    if (unique.length > 0) {
       html += '<p class="muted" style="margin-bottom:8px;">No classes here today. On other days:</p>';
       html += '<div class="wing-class-list">';
-      others.forEach(c => {
+      unique.forEach(c => {
         html += '<div class="wing-class-row"><strong>' + c.name + '</strong> · <em>' + c.day + '</em>';
         if (c.meta) html += '<div class="muted" style="margin-top:2px;">' + c.meta + '</div>';
         html += '</div>';
@@ -1675,8 +1684,8 @@ function focusRoom(wingKey) {
   setTimeout(() => focusWing(wingKey), 60);
 }
 
-/* Navigate to the map, switch to the correct floor, and highlight a
-   specific room circle. Called from class cards that have a roomId. */
+/* Navigate to the map, switch to the correct floor, and highlight room
+   circle(s). Accepts a single roomId or comma-separated list. */
 function focusMapRoom(roomId, floor) {
   go('map');
   setTimeout(() => {
@@ -1693,7 +1702,8 @@ function focusMapRoom(roomId, floor) {
       if (btn) btn.textContent = 'Show 2nd Floor';
       updateLegend('1st');
     }
-    showRoomInfo(roomId);
+    const ids = roomId.includes(',') ? roomId.split(',') : roomId;
+    showRoomInfo(ids);
   }, 80);
 }
 
