@@ -564,15 +564,15 @@
     box-shadow: 0 0 16px 4px rgba(0, 140, 150, 0.45);
   }
   .room-zone--active {
-    border-width: 7.5px;
-    border-color: rgba(157, 28, 48, 0.95);
-    border-style: solid;
+    border-color: transparent;
+    outline: 7.5px solid rgba(157, 28, 48, 0.95);
+    outline-offset: 0px;
     box-shadow: 0 0 18px 5px rgba(157, 28, 48, 0.4);
     animation: room-pulse 1.6s ease-in-out infinite;
   }
   @keyframes room-pulse {
-    0%, 100% { box-shadow: 0 0 18px 5px rgba(157, 28, 48, 0.4); border-color: rgba(157, 28, 48, 0.95); }
-    50%      { box-shadow: 0 0 28px 10px rgba(157, 28, 48, 0.6); border-color: rgba(157, 28, 48, 1); }
+    0%, 100% { box-shadow: 0 0 18px 5px rgba(157, 28, 48, 0.4); outline-color: rgba(157, 28, 48, 0.95); }
+    50%      { box-shadow: 0 0 28px 10px rgba(157, 28, 48, 0.6); outline-color: rgba(157, 28, 48, 1); }
   }
   /* Floor visibility: hide 2nd-floor zones by default, swap on toggle. */
   .map-frame .room-zone.floor-2 { display: none; }
