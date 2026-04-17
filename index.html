@@ -894,6 +894,11 @@
         <h3>Children's Classes</h3>
         <p>Classes for every age in the A, B, and C wings.</p>
       </div>
+      <div class="hub-card" onclick="focusMapRoom('238', '2nd')">
+        <div class="when">Sunday</div>
+        <h3>Student Ministry</h3>
+        <p>6th–12th grade meet in D Wing (2nd floor).</p>
+      </div>
     </div>
   </section>
 
@@ -1191,40 +1196,41 @@ document.getElementById('dayLabel').textContent = currentDay() + ' · ' + new Da
 
 /* ----- Class data (from KIOSK-REDESIGN-PLAN.md) ----- */
 const sundayAdult = [
-  { name: 'Connected Class', room: 'F-100', wing: 'gym', teachers: 'Scott Opaleski, Andy Pace, Drew Dasher', desc: 'Young adults, single or married, with or without kids.' },
-  { name: 'Families Class', room: 'F-102', wing: 'gym', teachers: 'Kristin & Brett Rovey', desc: 'Intergenerational — children welcome.' },
-  { name: "Women's Bible Group", room: 'F-106', wing: 'gym', teachers: 'Missy Edgmon', desc: 'Married or single ladies of any age.' },
-  { name: 'Chinese Bible Class', room: 'F-107', wing: 'gym', teachers: 'Greg Hoogerwerf, Sarah Smith', desc: 'Mandarin & English, all ages.' },
-  { name: 'International Fellowship', room: 'F-108', wing: 'gym', teachers: 'Steve Phillips, Doug Calvin', desc: 'ESL Bible study, taught in English.' },
-  { name: 'Young Adults (20s & 30s)', room: 'F-111', wing: 'gym', teachers: 'Gordon & Gretchen Ware, Nathan & Heather Lynch, Wade & Wendi Holmes', desc: 'Singles in their 20s and 30s.' },
-  { name: 'Horizons', room: 'F-112', wing: 'gym', teachers: 'Kyler Cole, Don Payne, John Ricks, Mauricio Villegas', desc: 'Singles or married, all ages.' },
-  { name: 'Chapel Class', room: 'The Chapel', wing: 'gym', teachers: 'Rodney Howald, Kim Brigham, Harold Eye', desc: '50s and above, variety of formats.' },
-  { name: 'Deaf Fellowship', room: 'Living Room', wing: 'worship', teachers: 'Tony Slate', desc: 'ASL only, all ages.' },
-  { name: 'Deeper Discipleship', room: 'East Room', wing: 'secondfloor', teachers: 'Anita & Brad Clarkston', desc: '50s and above.' },
-  { name: 'Young Married', room: 'The Studio', wing: 'secondfloor', teachers: 'Kyle & Janell Mickelson, Claire & Ryan Britt', desc: 'Married or engaged couples in their 20s.' }
+  { name: 'Connected Class', room: 'F-100', roomId: 'F100', floor: '1st', teachers: 'Scott Opaleski, Andy Pace, Drew Dasher', desc: 'Young adults, single or married, with or without kids.' },
+  { name: 'Families Class', room: 'F-102', roomId: 'F102', floor: '1st', teachers: 'Kristin & Brett Rovey', desc: 'Intergenerational — children welcome.' },
+  { name: "Women's Bible Group", room: 'F-106', roomId: 'F106', floor: '1st', teachers: 'Missy Edgmon', desc: 'Married or single ladies of any age.' },
+  { name: 'Chinese Bible Class', room: 'F-107', roomId: 'F107', floor: '1st', teachers: 'Greg Hoogerwerf, Sarah Smith', desc: 'Mandarin & English, all ages.' },
+  { name: 'International Fellowship', room: 'F-108', roomId: 'F108', floor: '1st', teachers: 'Steve Phillips, Doug Calvin', desc: 'ESL Bible study, taught in English.' },
+  { name: 'Young Adults (20s & 30s)', room: 'F-111', roomId: 'F111', floor: '1st', teachers: 'Gordon & Gretchen Ware, Nathan & Heather Lynch, Wade & Wendi Holmes', desc: 'Singles in their 20s and 30s.' },
+  { name: 'Horizons', room: 'F-112', roomId: 'F112', floor: '1st', teachers: 'Kyler Cole, Don Payne, John Ricks, Mauricio Villegas', desc: 'Singles or married, all ages.' },
+  { name: 'Chapel Class', room: 'The Chapel', roomId: 'Chapel', floor: '1st', teachers: 'Rodney Howald, Kim Brigham, Harold Eye', desc: '50s and above, variety of formats.' },
+  { name: 'Deaf Fellowship', room: 'Living Room', roomId: 'Living Room', floor: '1st', teachers: 'Tony Slate', desc: 'ASL only, all ages.' },
+  { name: 'Deeper Discipleship', room: 'East Room', roomId: 'East Room', floor: '1st', teachers: 'Anita & Brad Clarkston', desc: '50s and above.' },
+  { name: 'Young Married', room: 'The Studio', roomId: 'The Studio', floor: '2nd', teachers: 'Kyle & Janell Mickelson, Claire & Ryan Britt', desc: 'Married or engaged couples in their 20s.' }
 ];
 
 const sundayCare = [
-  { name: "Surviving Loss Men's Group", room: 'Conference Room', wing: 'd', teachers: 'Charles Foster', schedule: 'Meets the 2nd Sunday of each month' },
-  { name: 'Chronic Pain & Illness Group', room: 'Conference Room', wing: 'd', teachers: 'Cindy Scott', schedule: 'Meets the last Sunday of the month' }
+  { name: "Surviving Loss Men's Group", room: 'Conference Room', roomId: 'Conference Room', floor: '2nd', teachers: 'Charles Foster', schedule: 'Meets the 2nd Sunday of each month' },
+  { name: 'Chronic Pain & Illness Group', room: 'Conference Room', roomId: 'Conference Room', floor: '2nd', teachers: 'Cindy Scott', schedule: 'Meets the last Sunday of the month' }
 ];
 
 const wednesdayAdult = [
-  { name: 'UPLIFT Worship', room: 'East Room', wing: 'secondfloor', teachers: 'Various teachers', desc: 'Worship and teaching for all ages.' },
-  { name: "Men's Group", room: 'D-238', wing: 'd', teachers: 'Wade Holmes, Brandon Strother', desc: 'Discussion-based, any age.' },
-  { name: "Women's Group", room: 'D-236', wing: 'd', teachers: 'Missy Edgmon', desc: 'Discussion-based.' },
+  { name: 'UPLIFT Worship', room: 'East Room', roomId: 'East Room', floor: '1st', teachers: 'Various teachers', desc: 'Worship and teaching for all ages.' },
+  { name: "Men's Group", room: 'D-238', roomId: '238', floor: '2nd', teachers: 'Wade Holmes, Brandon Strother', desc: 'Discussion-based, any age.' },
+  { name: "Women's Group", room: 'D-236', roomId: '236', floor: '2nd', teachers: 'Missy Edgmon', desc: 'Discussion-based.' },
   {
     name: 'FriendSpeak',
     room: 'Lobby & F-100',
-    wing: 'gym',
+    roomId: 'F100',
+    floor: '1st',
     teachers: 'Grant Wright, Sarah Smith',
     desc: 'One-on-one English conversation. Training required before your first session.',
     special: true,
     sessions: ['6–7 PM', '7–8 PM', '8–9 PM'],
     detailScreen: 'friendspeak'
   },
-  { name: 'FriendSpeak ESL', room: 'Living Room', wing: 'worship', teachers: 'Janet Gallman', desc: '7–8 PM only.' },
-  { name: 'Deaf Ministry — Signing Worship Songs', room: 'Orange Room', wing: 'secondfloor', teachers: 'Benton Dibrell', desc: 'Meets 6–7 PM.' }
+  { name: 'FriendSpeak ESL', room: 'Living Room', roomId: 'Living Room', floor: '1st', teachers: 'Janet Gallman', desc: '7–8 PM only.' },
+  { name: 'Deaf Ministry — Signing Worship Songs', room: 'Orange Room', roomId: 'Orange Room', floor: '1st', teachers: 'Benton Dibrell', desc: 'Meets 6–7 PM.' }
 ];
 
 /* ----- Card rendering ----- */
@@ -1235,8 +1241,10 @@ function renderClassCard(c) {
   }
   const klass = c.special ? 'card special' : 'card';
   const badge = c.special ? '<div class="badge">Multi-Session</div>' : '';
-  // FriendSpeak gets a dedicated detail screen; other classes jump to the map.
-  const click = c.detailScreen ? "go('" + c.detailScreen + "')" : "focusRoom('" + c.wing + "')";
+  // FriendSpeak gets a detail screen; rooms with roomId jump to the map + highlight circle.
+  const click = c.detailScreen ? "go('" + c.detailScreen + "')"
+    : c.roomId ? "focusMapRoom('" + c.roomId + "','" + (c.floor || '1st') + "')"
+    : "focusRoom('" + c.wing + "')";
   const cta = c.detailScreen ? '<div class="teachers">Tap for times &amp; signup →</div>' : '';
   return '<div class="' + klass + '" onclick="' + click + '">' +
     badge +
@@ -1249,7 +1257,8 @@ function renderClassCard(c) {
     '</div>';
 }
 function renderCareCard(c) {
-  return '<div class="card care" onclick="focusRoom(\'' + c.wing + '\')">' +
+  const click = c.roomId ? "focusMapRoom('" + c.roomId + "','" + (c.floor || '1st') + "')" : "focusRoom('" + c.wing + "')";
+  return '<div class="card care" onclick="' + click + '">' +
     '<div class="badge">Monthly</div>' +
     '<span class="room-tag">' + c.room + '</span>' +
     '<h4>' + c.name + '</h4>' +
@@ -1446,64 +1455,110 @@ function resetMapView() {
 }
 
 /* ----- Interactive room tap zones (dashed circles) -----
-   ONLY rooms hosting Bible classes. No labels — the map already shows names.
-   Each entry: left/top = center of circle (%), size = diameter (% of frame width).
-   Positions from specs/BOB-BUILD-BRIEF.md, OCR-confirmed where noted. */
+   Every room from Room_Positions.csv except Worship Center, New Here, Rotunda.
+   Pixel coords in 5234×3900 image space → percentages for CSS positioning.
+   left = pixelX/5234*100, top = pixelY/3900*100, size = diameter/5234*100. */
+const IMG_W = 5234, IMG_H = 3900;
+function px(x,y,d) { return { left: x/IMG_W*100, top: y/IMG_H*100, size: d/IMG_W*100 }; }
 const rooms = [
-  // 1st floor — Gym Wing F-series
-  { id: 'F-100', floor: '1st', left: 40.7, top: 85.5, size: 5,
+  // ═══ 1ST FLOOR — B Wing (top row then bottom row) ═══
+  { id: '110', floor: '1st', ...px(391,361,175) },
+  { id: '108', floor: '1st', ...px(711,343,175) },
+  { id: '106', floor: '1st', ...px(940,342,175) },
+  { id: '104', floor: '1st', ...px(1278,341,175) },
+  { id: '102', floor: '1st', ...px(1511,347,175) },
+  { id: '114', floor: '1st', ...px(391,865,175) },
+  { id: '116', floor: '1st', ...px(711,856,175) },
+  { id: '118', floor: '1st', ...px(936,856,175) },
+  { id: '120', floor: '1st', ...px(1280,857,175) },
+  { id: '122', floor: '1st', ...px(1525,860,175) },
+  // ═══ 1ST FLOOR — A Wing (top row then bottom row) ═══
+  { id: '146', floor: '1st', ...px(2429,340,175) },
+  { id: '144', floor: '1st', ...px(2684,339,175) },
+  { id: '142', floor: '1st', ...px(3039,342,175) },
+  { id: '140', floor: '1st', ...px(3260,343,175) },
+  { id: '132', floor: '1st', ...px(2421,864,175) },
+  { id: '134', floor: '1st', ...px(2738,868,175) },
+  { id: '136', floor: '1st', ...px(2961,868,175) },
+  { id: '138', floor: '1st', ...px(3263,870,175) },
+  // ═══ 1ST FLOOR — Gym Wing (F-series) ═══
+  { id: 'F111', floor: '1st', ...px(680,2250,175),
+    sunday: [{ name: 'Young Adults (20s & 30s)', meta: 'Singles in their 20s and 30s' }] },
+  { id: 'F112', floor: '1st', ...px(1183,2295,175),
+    sunday: [{ name: 'Horizons', meta: 'Singles or married, all ages' }] },
+  { id: 'F109', floor: '1st', ...px(1051,3012,175) },
+  { id: 'F108', floor: '1st', ...px(1110,3216,175),
+    sunday: [{ name: 'International Fellowship', meta: 'ESL Bible study, taught in English' }] },
+  { id: 'F107', floor: '1st', ...px(1184,3454,175),
+    sunday: [{ name: 'Chinese Bible Class', meta: 'Mandarin & English, all ages' }] },
+  { id: 'F106', floor: '1st', ...px(1240,3643,175),
+    sunday: [{ name: "Women's Bible Group", meta: 'For women of all ages' }] },
+  { id: 'F100', floor: '1st', ...px(2131,3333,175),
     sunday: [{ name: 'Connected Class', meta: 'Young adults, single or married, with or without kids', teachers: 'Scott Opaleski, Andy Pace, Drew Dasher' }],
     wednesday: [{ name: 'FriendSpeak', meta: 'English conversation practice' }] },
-  { id: 'F-102', floor: '1st', left: 44.9, top: 91.0, size: 5,
+  { id: 'F102', floor: '1st', ...px(1807,3522,175),
     sunday: [{ name: 'Families Class', meta: 'Intergenerational — children welcome', teachers: 'Kristin & Brett Rovey' }] },
-  { id: 'F-106', floor: '1st', left: 21.0, top: 87.2, size: 5,
-    sunday: [{ name: "Women's Bible Group", meta: 'For women of all ages' }] },
-  { id: 'F-107', floor: '1st', left: 21.0, top: 84.6, size: 5,
-    sunday: [{ name: 'Chinese Bible Class', meta: 'Class taught in Mandarin Chinese' }] },
-  { id: 'F-108', floor: '1st', left: 21.3, top: 82.5, size: 5,
-    sunday: [{ name: 'International Fellowship', meta: 'For visitors from other countries' }] },
-  { id: 'F-111', floor: '1st', left: 20.1, top: 59.0, size: 5,
-    sunday: [{ name: 'Young Adults 20s & 30s', meta: 'Early-career singles and young couples' }] },
-  { id: 'F-112', floor: '1st', left: 25.8, top: 55.1, size: 5,
-    sunday: [{ name: 'Horizons', meta: 'Empty-nesters and retirees' }] },
-
-  // 1st floor — Chapel + Gym (larger circles)
-  { id: 'Chapel', floor: '1st', left: 30.0, top: 52.5, size: 9,
+  { id: 'F104', floor: '1st', ...px(1543,3600,175) },
+  // ═══ 1ST FLOOR — Chapel, Gym, and named rooms ═══
+  { id: 'Chapel', floor: '1st', ...px(1570,2048,175),
     sunday: [{ name: 'Chapel Class', meta: 'Traditional verse-by-verse Bible study' }] },
-  { id: 'Gym',    floor: '1st', left: 29.7, top: 75.7, size: 11,
+  { id: 'The Gym', floor: '1st', ...px(1554,2953,350),
     wednesday: [{ name: 'Student Ministry', meta: '6th–12th grade', time: '6:45 PM' }] },
-
-  // 1st floor — Worship Center / right-side rooms
-  { id: 'Living',  floor: '1st', left: 72.6, top: 38.5, size: 6,
-    sunday: [{ name: 'Deaf Fellowship', meta: 'ASL interpreted' }],
+  { id: 'The Lobby', floor: '1st', ...px(2550,2550,400) },
+  { id: 'Living Room', floor: '1st', ...px(3110,1745,175),
+    sunday: [{ name: 'Deaf Fellowship', meta: 'ASL only, all ages' }],
     wednesday: [{ name: 'FriendSpeak ESL', meta: 'English as a Second Language' }] },
-  { id: 'East',    floor: '1st', left: 84.1, top: 65.4, size: 6,
+  { id: 'Orange Room', floor: '1st', ...px(4184,2128,175),
+    wednesday: [{ name: 'Deaf Ministry', meta: 'Signing worship songs', time: '6:00 PM' }] },
+  { id: 'East Room', floor: '1st', ...px(4401,2550,250),
     sunday: [{ name: 'Deeper Discipleship', meta: 'Experienced Christians seeking deeper study' }],
     wednesday: [{ name: 'UPLIFT Worship', meta: 'All-ages worship', time: '7:00 PM' }] },
-  { id: 'Studio',  floor: '1st', left: 89.8, top: 65.4, size: 6,
-    sunday: [{ name: 'Young Married', meta: 'Newly married couples' }] },
-  { id: 'Orange',  floor: '1st', left: 89.8, top: 46.2, size: 6,
-    wednesday: [{ name: 'Deaf Ministry', meta: 'ASL service', time: '6:00 PM' }] },
-  { id: 'Conf',    floor: '1st', left: 65.0, top: 55.0, size: 6,
+  { id: 'Family Room', floor: '1st', ...px(3102,3333,175) },
+
+  // ═══ 2ND FLOOR — Conference Room ═══
+  { id: 'Conference Room', floor: '2nd', ...px(3400,2100,175),
     sunday: [{ name: 'Care Groups', meta: 'Meet monthly — check schedule' }] },
-
-  // 1st floor — Children's wings (larger circles covering whole wing)
-  { id: 'B-Wing', floor: '1st', left: 38.0, top: 25.0, size: 16,
-    sunday: [{ name: "Children's Bible Classes", meta: 'Preschool — see Children\'s Check-in' }],
-    wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] },
-  { id: 'A-Wing', floor: '1st', left: 58.0, top: 25.0, size: 16,
-    sunday: [{ name: "Children's Bible Classes", meta: 'Nursery — see Children\'s Check-in' }],
-    wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] },
-
-  // 2nd floor — D Wing rooms
-  { id: 'D-236', floor: '2nd', left: 75.0, top: 50.0, size: 6,
-    wednesday: [{ name: "Women's Group", meta: 'Women of all ages', time: '7:00 PM' }] },
-  { id: 'D-238', floor: '2nd', left: 75.0, top: 58.0, size: 6,
-    wednesday: [{ name: "Men's Group", meta: 'Men of all ages', time: '7:00 PM' }] },
-
-  // 2nd floor — C Wing (larger circle)
-  { id: 'C-Wing', floor: '2nd', left: 88.0, top: 40.0, size: 15,
-    wednesday: [{ name: 'Wednesday Night Lights', meta: 'Birth–Grade 5', time: '7:00 PM' }] }
+  // ═══ 2ND FLOOR — C Wing (top row then bottom row) ═══
+  { id: '210', floor: '2nd', ...px(400,342,175) },
+  { id: '208', floor: '2nd', ...px(691,336,175) },
+  { id: '206', floor: '2nd', ...px(924,335,175) },
+  { id: '204', floor: '2nd', ...px(1223,337,175) },
+  { id: '202', floor: '2nd', ...px(1486,336,175) },
+  { id: '214', floor: '2nd', ...px(396,865,175) },
+  { id: '216', floor: '2nd', ...px(690,865,175) },
+  { id: '218', floor: '2nd', ...px(924,865,175) },
+  { id: '220', floor: '2nd', ...px(1223,865,175) },
+  { id: '222', floor: '2nd', ...px(1483,865,175) },
+  // ═══ 2ND FLOOR — D Wing (top row then bottom row) ═══
+  { id: '244', floor: '2nd', ...px(2245,353,175) },
+  { id: '242', floor: '2nd', ...px(2643,377,175) },
+  { id: '240', floor: '2nd', ...px(2932,378,175) },
+  { id: '238', floor: '2nd', ...px(3221,381,175),
+    wednesday: [{ name: "Men's Group", meta: 'Discussion-based, any age', time: '7:00 PM' }] },
+  { id: '232', floor: '2nd', ...px(2560,815,175) },
+  { id: '233', floor: '2nd', ...px(2769,815,175) },
+  { id: '234', floor: '2nd', ...px(2980,815,175) },
+  { id: '236', floor: '2nd', ...px(3215,815,175),
+    wednesday: [{ name: "Women's Group", meta: 'Discussion-based', time: '7:00 PM' }] },
+  // ═══ 2ND FLOOR — B Wing upper rooms (smaller circles) ═══
+  { id: '156', floor: '2nd', ...px(2020,1880,150) },
+  { id: '158', floor: '2nd', ...px(1880,1920,150) },
+  { id: '160', floor: '2nd', ...px(1750,1960,150) },
+  { id: '162', floor: '2nd', ...px(1615,2000,150) },
+  { id: '164', floor: '2nd', ...px(1480,2040,150) },
+  { id: '166', floor: '2nd', ...px(1355,2080,150) },
+  { id: '168', floor: '2nd', ...px(1225,2120,150) },
+  { id: '170', floor: '2nd', ...px(1090,2160,150) },
+  { id: '172', floor: '2nd', ...px(970,2200,150) },
+  { id: '174', floor: '2nd', ...px(840,2240,150) },
+  { id: '176', floor: '2nd', ...px(705,2280,150) },
+  { id: '178', floor: '2nd', ...px(555,2330,150) },
+  { id: '154', floor: '2nd', ...px(1812,2123,150) },
+  { id: '148', floor: '2nd', ...px(1825,2620,150) },
+  { id: '144-2nd', floor: '2nd', ...px(2268,2476,150) },
+  // ═══ 2ND FLOOR — The Studio ═══
+  { id: 'The Studio', floor: '2nd', ...px(4401,2550,250),
+    sunday: [{ name: 'Young Married', meta: 'Newly married couples' }] }
 ];
 
 function renderRoomZones() {
@@ -1611,8 +1666,29 @@ function focusWing(key) {
 function focusRoom(wingKey) {
   if (!wingKey) return;
   go('map');
-  // slight delay so screen swaps before zoom
   setTimeout(() => focusWing(wingKey), 60);
+}
+
+/* Navigate to the map, switch to the correct floor, and highlight a
+   specific room circle. Called from class cards that have a roomId. */
+function focusMapRoom(roomId, floor) {
+  go('map');
+  setTimeout(() => {
+    const frame = document.getElementById('mapFrame');
+    const btn = document.getElementById('floor2Toggle');
+    if (!frame) return;
+    const is2nd = frame.classList.contains('show-2nd');
+    if (floor === '2nd' && !is2nd) {
+      frame.classList.add('show-2nd');
+      if (btn) btn.textContent = 'Show 1st Floor';
+      updateLegend('2nd');
+    } else if (floor === '1st' && is2nd) {
+      frame.classList.remove('show-2nd');
+      if (btn) btn.textContent = 'Show 2nd Floor';
+      updateLegend('1st');
+    }
+    showRoomInfo(roomId);
+  }, 80);
 }
 
 function classesInWingToday(wingKey) {
