@@ -563,6 +563,12 @@
   .room-zone:active {
     box-shadow: 0 0 16px 4px rgba(0, 140, 150, 0.45);
   }
+  /* Rectangle zones (e.g., wing labels) — override circle defaults. */
+  .room-zone--rect {
+    aspect-ratio: auto;
+    border-radius: 6px;
+    transform: none;
+  }
   .room-zone--active {
     border-color: transparent;
     outline: 7.5px solid rgba(157, 28, 48, 0.95);
@@ -900,7 +906,7 @@
         <h3>Children's Classes</h3>
         <p>Classes for every age in the A, B, and C wings.</p>
       </div>
-      <div class="hub-card" onclick="focusMapRoom('238', '2nd')">
+      <div class="hub-card" onclick="focusMapRoom('D-Wing', '2nd')">
         <div class="when">Sunday</div>
         <h3>Student Ministry</h3>
         <p>6th–12th grade meet in D Wing (2nd floor).</p>
@@ -1549,6 +1555,9 @@ const rooms = [
   { id: '234', floor: '2nd', ...px(2980,815,175) },
   { id: '236', floor: '2nd', ...px(3215,815,175),
     wednesday: [{ name: "Women's Group", meta: 'Discussion-based', time: '7:00 PM' }] },
+  // D Wing label rectangle — Student Ministry navigates here
+  { id: 'D-Wing', floor: '2nd', shape: 'rect', left: 2375/IMG_W*100, top: 90/IMG_H*100, width: 510/IMG_W*100, height: 105/IMG_H*100,
+    sunday: [{ name: 'Student Ministry', meta: '6th–12th grade meet in D Wing' }] },
   // ═══ 2ND FLOOR — B Wing upper rooms (smaller circles) ═══
   { id: '156', floor: '2nd', ...px(2020,1880,150) },
   { id: '158', floor: '2nd', ...px(1880,1920,150) },
@@ -1577,10 +1586,12 @@ function renderRoomZones() {
   rooms.forEach(room => {
     const el = document.createElement('div');
     el.className = 'room-zone floor-' + (room.floor === '2nd' ? '2' : '1');
+    if (room.shape === 'rect') el.classList.add('room-zone--rect');
     el.dataset.roomId = room.id;
     el.style.left = room.left + '%';
     el.style.top = room.top + '%';
-    el.style.width = room.size + '%';
+    el.style.width = (room.width || room.size) + '%';
+    if (room.height) el.style.height = room.height + '%';
     el.addEventListener('click', () => showRoomInfo(room.id));
     frame.appendChild(el);
   });
