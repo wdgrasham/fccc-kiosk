@@ -998,6 +998,9 @@
         <p><strong>When:</strong> Wednesday evenings — three one-hour sessions: 6–7 PM, 7–8 PM, and 8–9 PM.</p>
         <p><strong>Leaders:</strong> Grant Wright & Sarah Smith.</p>
         <p style="margin-top:12px;">New volunteers take a short training before sitting down with a conversation partner. Scan the QR to sign up — our team will get you scheduled for the next training.</p>
+        <div style="margin-top:16px;">
+          <button class="btn secondary" onclick="focusMapRoom('The Lobby,F100','1st')">Show on Building Map</button>
+        </div>
       </div>
       <div class="qr-block">
         <div class="qr-code" data-qr="https://www.firstcolonychurch.org/first-colony-friendspeak/"></div>
@@ -1232,7 +1235,8 @@ const wednesdayAdult = [
     teachers: 'Grant Wright, Sarah Smith',
     desc: 'One-on-one English conversation. Training required before your first session.',
     special: true,
-    sessions: ['6–7 PM', '7–8 PM', '8–9 PM']
+    sessions: ['6–7 PM', '7–8 PM', '8–9 PM'],
+    detailScreen: 'friendspeak'
   },
   { name: 'FriendSpeak ESL', room: 'Living Room', roomId: 'Living Room', floor: '1st', teachers: 'Janet Gallman', desc: '7–8 PM only.' },
   { name: 'Deaf Ministry — Signing Worship Songs', room: 'Orange Room', roomId: 'Orange Room', floor: '1st', teachers: 'Benton Dibrell', desc: 'Meets 6–7 PM.' }
