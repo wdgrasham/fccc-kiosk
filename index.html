@@ -224,10 +224,10 @@
   .section-head h2 { margin-bottom: 4px; }
   .section-head .lede { font-size: 20px; color: var(--gray); max-width: 900px; margin: 0 auto; }
 
-  /* ============ CARD GRID — cards stay square-ish, centered in viewport ============ */
+  /* ============ CARD GRID — max 3 columns, cards stay square-ish ============ */
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     align-content: center;
     align-self: center;
@@ -303,15 +303,17 @@
   .paginator .btn { min-width: 140px; justify-content: center; }
   .paginated { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 
-  /* ============ CATEGORY HUB — cards stay square-ish, centered ============ */
+  /* ============ CATEGORY HUB — max 3 columns, centered ============ */
   .hub-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 24px;
     align-content: center;
     align-self: center;
     width: 100%;
     flex: 1 1 auto;
+    max-width: 1200px;
+    margin: 0 auto;
   }
   .hub-card {
     background: #fff;
@@ -715,7 +717,7 @@
       <p class="lede">We're so glad you stopped by. Here's how to take your first steps.</p>
     </div>
 
-    <div class="card-grid">
+    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
       <div class="card" onclick="go('new-here-start')">
         <h4>Start Here</h4>
         <div class="desc">Visit the Start Here room or fill out a Start Here Card and someone from our team will follow up.</div>
@@ -1361,7 +1363,8 @@ function paginate(containerId, items, perPage, renderFn) {
   function render() {
     const start = page * perPage;
     const slice = items.slice(start, start + perPage);
-    let html = '<div class="card-grid">' + slice.map(renderFn).join('') + '</div>';
+    const cols = slice.length === 4 ? 2 : 3;
+    let html = '<div class="card-grid" style="grid-template-columns:repeat(' + cols + ',1fr)">' + slice.map(renderFn).join('') + '</div>';
     if (total > 1) {
       html += '<div class="paginator">' +
         '<button class="btn secondary" ' + (page === 0 ? 'disabled' : '') +
@@ -1382,8 +1385,8 @@ function paginate(containerId, items, perPage, renderFn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Sunday adult: 11 items; show all on one page to fill the screen.
-  paginate('sunday-adult-list', sundayAdult, 12, renderClassCard);
+  // Sunday adult: 11 items; 9 per page (3×3 grid), page 2 gets the rest.
+  paginate('sunday-adult-list', sundayAdult, 9, renderClassCard);
   // Wednesday adult: 6 items; show all.
   paginate('wed-adult-list', wednesdayAdult, 6, renderClassCard);
   const care = document.getElementById('sunday-care-list');
