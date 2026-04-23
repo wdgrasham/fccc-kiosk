@@ -672,7 +672,6 @@
       <div class="tile" onclick="go('classes')">
         <div class="tile-media">
           <img src="assets/images/bible-classes.jpg" alt="Bible Classes" />
-          <span class="tile-pill">9:45am</span>
         </div>
         <div class="tile-body">
           <div class="tile-title">Bible Classes</div>
@@ -682,7 +681,7 @@
       </div>
       <div class="tile" onclick="go('volunteer')">
         <div class="tile-media">
-          <img src="assets/images/volunteer.jpg" alt="Volunteer at First Colony" />
+          <img src="assets/images/volunteer-new.jpg" alt="Volunteer at First Colony" />
           <span class="tile-pill">Serve</span>
         </div>
         <div class="tile-body">
@@ -945,12 +944,50 @@
     </div>
     <div class="section-head">
       <h2>Sunday · Children's Classes</h2>
-      <p class="lede">Children meet during the 9:45 AM class hour.</p>
+      <p class="lede">9:45 AM Bible Class hour · Check in at the Children's Check-in (CC) desk in the lobby.</p>
     </div>
-    <div class="info-block">
-      <p>Children's classes meet in our <strong>A, B, and C wings</strong>. Individual room assignments by age are posted at the Children's Check-in (CC) desk in the lobby.</p>
-      <p style="margin-top:12px;">Our check-in team will help you find your child's class and get them signed in.</p>
-      <p style="margin-top:16px;"><span class="room-line">Check-in: Children's Check-in Desk (Lobby)</span></p>
+    <div class="screen-body">
+      <div class="hub-grid" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="hub-card" onclick="focusMapRoom('A-Wing-area', '1st')">
+          <div class="when">A Wing · Birth–2 Years</div>
+          <h3>Toddler Town</h3>
+          <p style="font-size:13px; line-height:1.4;">
+            Babies: Room 134 (Bumblebee)<br>
+            2 Year Olds: Room 144 (Grasshopper)<br>
+            <em style="color:var(--gray); font-size:12px;">Directors: Tammy Morris &amp; Danel Taylor</em>
+          </p>
+          <div class="tile-cta" style="margin-top:6px;">Show on Map <span class="arrow">&rarr;</span></div>
+        </div>
+        <div class="hub-card" onclick="focusMapRoom('B-Wing-area', '1st')">
+          <div class="when">B Wing · Ages 3–Kindergarten</div>
+          <h3>Kinder Way</h3>
+          <p style="font-size:13px; line-height:1.4;">
+            3 Year Olds: Room 102 (Alligator)<br>
+            4 Year Olds: Room 118 (Giraffe)<br>
+            Kindergarten: Room 122 (Zebra)<br>
+            <em style="color:var(--gray); font-size:12px;">Directors: Natalie Painter &amp; Andrea Madonna</em>
+          </p>
+          <div class="tile-cta" style="margin-top:6px;">Show on Map <span class="arrow">&rarr;</span></div>
+        </div>
+        <div class="hub-card" onclick="focusMapRoom('C-Wing-area', '2nd')">
+          <div class="when">C Wing · Grades 1–5 (2nd Floor)</div>
+          <h3>Element Tree</h3>
+          <p style="font-size:13px; line-height:1.4;">
+            1st Grade: Rooms 220/222<br>
+            2nd Grade: Rooms 216/218<br>
+            3rd Grade: Rooms 202/204<br>
+            4th Grade: Rooms 206/208<br>
+            5th Grade: Room 210<br>
+            <em style="color:var(--gray); font-size:12px;">Directors: Noah Shugart &amp; Nancy Kornegay</em>
+          </p>
+          <div class="tile-cta" style="margin-top:6px;">Show on Map <span class="arrow">&rarr;</span></div>
+        </div>
+      </div>
+      <div class="info-block" style="margin-top:14px;">
+        <h4>Sunday Worship Services (8:30 AM &amp; 11:00 AM)</h4>
+        <p style="margin-top:6px; font-size:14px;"><strong>Kindergarten &amp; Under:</strong> Check in and drop off before service in the A or B Wing.</p>
+        <p style="margin-top:4px; font-size:14px;"><strong>1st–5th Grades:</strong> Kids attend worship with parents until dismissal to the Chapel.</p>
+      </div>
     </div>
   </section>
 
@@ -1500,19 +1537,24 @@ const rooms = [
   { id: '108', floor: '1st', ...px(711,343,175) },
   { id: '106', floor: '1st', ...px(940,342,175) },
   { id: '104', floor: '1st', ...px(1278,341,175) },
-  { id: '102', floor: '1st', ...px(1511,347,175) },
+  { id: '102', floor: '1st', ...px(1511,347,175),
+    sunday: [{ name: 'Kinder Way — 3 Year Olds (Alligator)', meta: 'Ages 3 · B Wing' }] },
   { id: '114', floor: '1st', ...px(391,865,175) },
   { id: '116', floor: '1st', ...px(711,856,175) },
-  { id: '118', floor: '1st', ...px(936,856,175) },
+  { id: '118', floor: '1st', ...px(936,856,175),
+    sunday: [{ name: 'Kinder Way — 4 Year Olds (Giraffe)', meta: 'Ages 4 · B Wing' }] },
   { id: '120', floor: '1st', ...px(1280,857,175) },
-  { id: '122', floor: '1st', ...px(1525,860,175) },
+  { id: '122', floor: '1st', ...px(1525,860,175),
+    sunday: [{ name: 'Kinder Way — Kindergarten (Zebra)', meta: 'Kindergarten · B Wing' }] },
   // ═══ 1ST FLOOR — A Wing (top row then bottom row) ═══
   { id: '146', floor: '1st', ...px(2429,340,175) },
-  { id: '144', floor: '1st', ...px(2684,339,175) },
+  { id: '144', floor: '1st', ...px(2684,339,175),
+    sunday: [{ name: 'Toddler Town — 2 Year Olds (Grasshopper)', meta: '2 Year Olds · A Wing' }] },
   { id: '142', floor: '1st', ...px(3039,342,175) },
   { id: '140', floor: '1st', ...px(3260,343,175) },
   { id: '132', floor: '1st', ...px(2421,864,175) },
-  { id: '134', floor: '1st', ...px(2738,868,175) },
+  { id: '134', floor: '1st', ...px(2738,868,175),
+    sunday: [{ name: 'Toddler Town — Babies (Bumblebee)', meta: 'Birth · A Wing' }] },
   { id: '136', floor: '1st', ...px(2961,868,175) },
   { id: '138', floor: '1st', ...px(3263,870,175) },
   // ═══ 1ST FLOOR — Gym Wing (F-series) ═══
@@ -1553,16 +1595,25 @@ const rooms = [
   { id: 'Conference Room', floor: '2nd', ...px(3400,2100,175),
     sunday: [{ name: 'Care Groups', meta: 'Meet monthly — check schedule' }] },
   // ═══ 2ND FLOOR — C Wing (top row then bottom row) ═══
-  { id: '210', floor: '2nd', ...px(400,342,175) },
-  { id: '208', floor: '2nd', ...px(691,336,175) },
-  { id: '206', floor: '2nd', ...px(924,335,175) },
-  { id: '204', floor: '2nd', ...px(1223,337,175) },
-  { id: '202', floor: '2nd', ...px(1486,336,175) },
+  { id: '210', floor: '2nd', ...px(400,342,175),
+    sunday: [{ name: 'Element Tree — 5th Grade', meta: 'C Wing · 2nd Floor' }] },
+  { id: '208', floor: '2nd', ...px(691,336,175),
+    sunday: [{ name: 'Element Tree — 4th Grade', meta: 'C Wing · 2nd Floor' }] },
+  { id: '206', floor: '2nd', ...px(924,335,175),
+    sunday: [{ name: 'Element Tree — 4th Grade', meta: 'C Wing · 2nd Floor' }] },
+  { id: '204', floor: '2nd', ...px(1223,337,175),
+    sunday: [{ name: 'Element Tree — 3rd Grade', meta: 'C Wing · 2nd Floor' }] },
+  { id: '202', floor: '2nd', ...px(1486,336,175),
+    sunday: [{ name: 'Element Tree — 3rd Grade', meta: 'C Wing · 2nd Floor' }] },
   { id: '214', floor: '2nd', ...px(396,865,175) },
-  { id: '216', floor: '2nd', ...px(690,865,175) },
-  { id: '218', floor: '2nd', ...px(924,865,175) },
-  { id: '220', floor: '2nd', ...px(1223,865,175) },
-  { id: '222', floor: '2nd', ...px(1483,865,175) },
+  { id: '216', floor: '2nd', ...px(690,865,175),
+    sunday: [{ name: 'Element Tree — 2nd Grade', meta: 'C Wing · 2nd Floor' }] },
+  { id: '218', floor: '2nd', ...px(924,865,175),
+    sunday: [{ name: 'Element Tree — 2nd Grade', meta: 'C Wing · 2nd Floor' }] },
+  { id: '220', floor: '2nd', ...px(1223,865,175),
+    sunday: [{ name: 'Element Tree — 1st Grade', meta: 'C Wing · 2nd Floor' }] },
+  { id: '222', floor: '2nd', ...px(1483,865,175),
+    sunday: [{ name: 'Element Tree — 1st Grade', meta: 'C Wing · 2nd Floor' }] },
   // ═══ 2ND FLOOR — D Wing (top row then bottom row) ═══
   { id: '244', floor: '2nd', ...px(2245,353,175) },
   { id: '242', floor: '2nd', ...px(2643,377,175) },
@@ -1576,9 +1627,12 @@ const rooms = [
     wednesday: [{ name: "Women's Group", meta: 'Discussion-based', time: '7:00 PM' }] },
   // D Wing label + full wing area — Student Ministry highlights both
   // Wing area rectangles — highlight-only, invisible until activated from a class card
-  { id: 'A-Wing-area', floor: '1st', shape: 'rect', highlightOnly: true, left: 2200/IMG_W*100, top: 224/IMG_H*100, width: 1200/IMG_W*100, height: 750/IMG_H*100 },
-  { id: 'B-Wing-area', floor: '1st', shape: 'rect', highlightOnly: true, left: 200/IMG_W*100, top: 224/IMG_H*100, width: 1500/IMG_W*100, height: 750/IMG_H*100 },
-  { id: 'C-Wing-area', floor: '2nd', shape: 'rect', highlightOnly: true, left: 200/IMG_W*100, top: 224/IMG_H*100, width: 1500/IMG_W*100, height: 750/IMG_H*100 },
+  // A Wing (1st floor) = same coords as D Wing (2nd floor): (2011,224)→(3362,972)
+  { id: 'A-Wing-area', floor: '1st', shape: 'rect', highlightOnly: true, left: 2011/IMG_W*100, top: 224/IMG_H*100, width: (3362-2011)/IMG_W*100, height: (972-224)/IMG_H*100 },
+  // B Wing (1st floor) = same coords as C Wing (2nd floor): (285,234)→(1636,980)
+  { id: 'B-Wing-area', floor: '1st', shape: 'rect', highlightOnly: true, left: 285/IMG_W*100, top: 234/IMG_H*100, width: (1636-285)/IMG_W*100, height: (980-234)/IMG_H*100 },
+  // C Wing (2nd floor) = same coords as B Wing (1st floor): (285,234)→(1636,980)
+  { id: 'C-Wing-area', floor: '2nd', shape: 'rect', highlightOnly: true, left: 285/IMG_W*100, top: 234/IMG_H*100, width: (1636-285)/IMG_W*100, height: (980-234)/IMG_H*100 },
   { id: 'D-Wing-label', floor: '2nd', shape: 'rect', left: 2375/IMG_W*100, top: 90/IMG_H*100, width: 510/IMG_W*100, height: 105/IMG_H*100,
     sunday: [{ name: 'Student Ministry', meta: '6th–12th grade meet in D Wing' }] },
   { id: 'D-Wing-area', floor: '2nd', shape: 'rect', highlightOnly: true, left: 2011/IMG_W*100, top: 224/IMG_H*100, width: (3362-2011)/IMG_W*100, height: (972-224)/IMG_H*100 },
