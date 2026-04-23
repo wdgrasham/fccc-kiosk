@@ -38,7 +38,7 @@
     width: 100%;
     overflow: hidden; /* kiosk never scrolls */
     font-family: "Open Sans", system-ui, Arial, sans-serif;
-    font-size: 17px;
+    font-size: 20px;
     color: var(--deep-teal);
     background: var(--bg);
     overscroll-behavior: none;
@@ -46,10 +46,10 @@
     user-select: none;
   }
   h1, h2, h3, h4 { font-family: "Alfa Slab One", Georgia, serif; font-weight: 400; letter-spacing: 0.3px; }
-  h1 { font-size: 44px; color: var(--deep-teal); }
-  h2 { font-size: 30px; color: var(--deep-teal); line-height: 1.1; }
-  h3 { font-size: 22px; color: var(--classic-teal); line-height: 1.15; }
-  h4 { font-size: 18px; color: var(--deep-teal); line-height: 1.2; }
+  h1 { font-size: 52px; color: var(--deep-teal); }
+  h2 { font-size: 38px; color: var(--deep-teal); line-height: 1.1; }
+  h3 { font-size: 28px; color: var(--classic-teal); line-height: 1.15; }
+  h4 { font-size: 24px; color: var(--deep-teal); line-height: 1.2; }
   p { line-height: 1.5; }
 
   /* Root app container — locked to viewport, no scroll */
@@ -95,9 +95,9 @@
   }
   .btn {
     font-family: "Open Sans"; font-weight: 600;
-    font-size: 15px;
-    padding: 10px 20px;
-    min-height: 48px;
+    font-size: 18px;
+    padding: 12px 24px;
+    min-height: 52px;
     border-radius: 999px;
     border: 2px solid transparent;
     background: var(--bright-teal);
@@ -184,16 +184,16 @@
     color: var(--body-text);
     line-height: 1.15;
   }
-  .tile-desc { font-size: 14px; color: var(--gray); line-height: 1.5; }
+  .tile-desc { font-size: 17px; color: var(--gray); line-height: 1.5; }
   .tile-cta {
     margin-top: auto;
     color: var(--accent);
     font-weight: 700;
-    font-size: 14px;
+    font-size: 17px;
     letter-spacing: 0.3px;
     display: inline-flex; align-items: center; gap: 6px;
   }
-  .tile-cta .arrow { font-size: 18px; line-height: 1; }
+  .tile-cta .arrow { font-size: 20px; line-height: 1; }
 
   /* New Here? tile — teal gradient overlay + centered Alfa Slab One title
      baked over the hero photo, matching the firstcolonychurch.org/next-steps/new-here/ treatment. */
@@ -222,7 +222,7 @@
   /* ============ SECTION HEADER (sub screens) — centered ============ */
   .section-head { margin-bottom: 14px; flex: 0 0 auto; text-align: center; }
   .section-head h2 { margin-bottom: 4px; }
-  .section-head .lede { font-size: 15px; color: var(--gray); max-width: 720px; margin: 0 auto; }
+  .section-head .lede { font-size: 20px; color: var(--gray); max-width: 900px; margin: 0 auto; }
 
   /* ============ CARD GRID (generic) — fills available space ============ */
   .card-grid {
@@ -234,55 +234,58 @@
   }
   .card {
     background: #fff;
-    border-radius: 12px;
-    padding: 18px 20px;
+    border-radius: 14px;
+    padding: 22px 24px;
     box-shadow: var(--shadow);
     border-left: 6px solid var(--bright-teal);
-    display: flex; flex-direction: column; gap: 8px;
+    display: flex; flex-direction: column; gap: 10px;
     cursor: pointer;
     transition: transform 0.1s ease, box-shadow 0.15s ease;
+    aspect-ratio: auto;
+    justify-content: center;
   }
   .card:hover { box-shadow: var(--shadow-lg); }
   .card:active { transform: scale(0.99); }
   .card .room-tag {
     align-self: flex-start;
-    font-family: "Open Sans"; font-weight: 700; font-size: 13px;
+    font-family: "Open Sans"; font-weight: 700; font-size: 16px;
     letter-spacing: 0.5px;
     background: var(--deep-teal);
     color: #fff;
-    padding: 6px 10px;
+    padding: 6px 12px;
     border-radius: 6px;
     text-transform: uppercase;
   }
-  .card h4 { color: var(--deep-teal); font-size: 17px; }
-  .card .desc { font-size: 13px; color: #3c4a50; line-height: 1.4; }
-  .card .teachers { font-size: 12px; color: var(--gray); font-style: italic; }
+  .card h4 { color: var(--deep-teal); font-size: 22px; }
+  .card .desc { font-size: 17px; color: #3c4a50; line-height: 1.4; }
+  .card .teachers { font-size: 15px; color: var(--gray); font-style: italic; }
   .card .badge {
-    align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
-    text-transform: uppercase; padding: 4px 10px; border-radius: 999px;
+    align-self: flex-start; font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+    text-transform: uppercase; padding: 5px 12px; border-radius: 999px;
   }
   .card.care { border-left-color: var(--accent-red); }
   .card.care .badge { background: var(--accent-red); color: #fff; }
   .card.special { border-left-color: var(--bright-aqua); }
   .card.special .badge { background: var(--bright-aqua); color: var(--deep-teal); }
   .card .schedule-note {
-    font-size: 13px; background: #fff5f0; color: var(--accent-red);
-    padding: 6px 10px; border-radius: 6px; font-weight: 600;
+    font-size: 16px; background: #fff5f0; color: var(--accent-red);
+    padding: 8px 12px; border-radius: 6px; font-weight: 600;
   }
   .card .sessions {
-    display: flex; flex-wrap: wrap; gap: 6px;
+    display: flex; flex-wrap: wrap; gap: 8px;
   }
   .card .session-chip {
-    font-size: 12px; font-weight: 600;
+    font-size: 15px; font-weight: 600;
     background: #e8f4f5; color: var(--classic-teal);
-    padding: 4px 9px; border-radius: 6px;
+    padding: 5px 12px; border-radius: 6px;
   }
 
   /* Subgroup header inside a category page */
   .subgroup-title {
-    font-family: "Alfa Slab One"; font-size: 18px; color: var(--classic-teal);
-    margin: 14px 0 8px; letter-spacing: 0.3px;
+    font-family: "Alfa Slab One"; font-size: 24px; color: var(--classic-teal);
+    margin: 14px 0 10px; letter-spacing: 0.3px;
     flex: 0 0 auto;
+    text-align: center;
   }
   .subgroup-title:first-of-type { margin-top: 4px; }
 
@@ -294,7 +297,7 @@
     gap: 16px;
   }
   .paginator .page-indicator {
-    font-weight: 700; color: var(--deep-teal); font-size: 15px;
+    font-weight: 700; color: var(--deep-teal); font-size: 18px;
     min-width: 100px; text-align: center;
   }
   .paginator .btn { min-width: 140px; justify-content: center; }
@@ -321,11 +324,11 @@
   .hub-card:hover { border-color: var(--bright-aqua); box-shadow: var(--shadow-lg); }
   .hub-card:active { transform: scale(0.98); }
   .hub-card .when {
-    font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
+    font-size: 16px; font-weight: 700; letter-spacing: 0.8px;
     text-transform: uppercase; color: var(--bright-teal);
   }
-  .hub-card h3 { font-family: "Alfa Slab One"; font-size: 22px; color: var(--deep-teal); }
-  .hub-card p { font-size: 14px; color: var(--gray); }
+  .hub-card h3 { font-family: "Alfa Slab One"; font-size: 28px; color: var(--deep-teal); }
+  .hub-card p { font-size: 18px; color: var(--gray); }
 
   /* ============ QR Placeholder ============ */
   .qr-block {
@@ -365,12 +368,12 @@
   }
   .info-block { background: #fff; border-radius: 14px; padding: 20px 22px; box-shadow: var(--shadow); overflow: hidden; }
   .info-block h3 { margin-bottom: 10px; }
-  .info-block p { font-size: 15px; color: #3c4a50; margin-bottom: 10px; }
+  .info-block p { font-size: 18px; color: #3c4a50; margin-bottom: 10px; }
   .info-block .room-line {
     display: inline-block;
     background: var(--deep-teal); color: #fff;
     padding: 6px 12px; border-radius: 6px;
-    font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
+    font-size: 16px; font-weight: 700; letter-spacing: 0.5px;
     text-transform: uppercase;
   }
 
@@ -615,8 +618,8 @@
 
   /* ===== Responsive ===== */
   @media (max-width: 900px) {
-    h1 { font-size: 34px; }
-    h2 { font-size: 28px; }
+    h1 { font-size: 40px; }
+    h2 { font-size: 32px; }
     .hero .welcome { font-size: 40px; }
     .screen { padding: 24px 20px; }
     .home-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
@@ -954,34 +957,34 @@
         <div class="hub-card" onclick="focusMapRoom('A-Wing-area', '1st')">
           <div class="when">A Wing · Birth–2 Years</div>
           <h3>Toddler Town</h3>
-          <p style="font-size:13px; line-height:1.4;">
+          <p style="font-size:17px; line-height:1.4;">
             Babies: Room 134 (Bumblebee)<br>
             2 Year Olds: Room 144 (Grasshopper)<br>
-            <em style="color:var(--gray); font-size:12px;">Directors: Tammy Morris &amp; Danel Taylor</em>
+            <em style="color:var(--gray); font-size:15px;">Directors: Tammy Morris &amp; Danel Taylor</em>
           </p>
           <div class="tile-cta" style="margin-top:6px;">Show on Map <span class="arrow">&rarr;</span></div>
         </div>
         <div class="hub-card" onclick="focusMapRoom('B-Wing-area', '1st')">
           <div class="when">B Wing · Ages 3–Kindergarten</div>
           <h3>Kinder Way</h3>
-          <p style="font-size:13px; line-height:1.4;">
+          <p style="font-size:17px; line-height:1.4;">
             3 Year Olds: Room 102 (Alligator)<br>
             4 Year Olds: Room 118 (Giraffe)<br>
             Kindergarten: Room 122 (Zebra)<br>
-            <em style="color:var(--gray); font-size:12px;">Directors: Natalie Painter &amp; Andrea Madonna</em>
+            <em style="color:var(--gray); font-size:15px;">Directors: Natalie Painter &amp; Andrea Madonna</em>
           </p>
           <div class="tile-cta" style="margin-top:6px;">Show on Map <span class="arrow">&rarr;</span></div>
         </div>
         <div class="hub-card" onclick="focusMapRoom('C-Wing-area', '2nd')">
           <div class="when">C Wing · Grades 1–5 (2nd Floor)</div>
           <h3>Element Tree</h3>
-          <p style="font-size:13px; line-height:1.4;">
+          <p style="font-size:17px; line-height:1.4;">
             1st Grade: Rooms 220/222<br>
             2nd Grade: Rooms 216/218<br>
             3rd Grade: Rooms 202/204<br>
             4th Grade: Rooms 206/208<br>
             5th Grade: Room 210<br>
-            <em style="color:var(--gray); font-size:12px;">Directors: Noah Shugart &amp; Nancy Kornegay</em>
+            <em style="color:var(--gray); font-size:15px;">Directors: Noah Shugart &amp; Nancy Kornegay</em>
           </p>
           <div class="tile-cta" style="margin-top:6px;">Show on Map <span class="arrow">&rarr;</span></div>
         </div>
