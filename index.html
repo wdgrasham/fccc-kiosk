@@ -304,26 +304,25 @@
   .paginator .btn { min-width: 140px; justify-content: center; }
   .paginated { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 
-  /* ============ CATEGORY HUB — max 3 columns, centered ============ */
+  /* ============ CATEGORY HUB — same grid rules as card-grid ============ */
   .hub-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 20px;
     align-content: center;
     align-self: center;
     width: 100%;
     flex: 1 1 auto;
-    max-width: 1200px;
-    margin: 0 auto;
   }
   .hub-card {
     background: #fff;
     border-radius: 14px;
-    padding: 30px 32px;
+    padding: 28px 30px;
     box-shadow: var(--shadow);
     border: 2px solid transparent;
     cursor: pointer;
-    display: flex; flex-direction: column; gap: 10px;
+    display: flex; flex-direction: column; gap: 12px;
     justify-content: center;
     transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   }
@@ -333,8 +332,9 @@
     font-size: 18px; font-weight: 700; letter-spacing: 0.8px;
     text-transform: uppercase; color: var(--bright-teal);
   }
-  .hub-card h3 { font-family: "Alfa Slab One"; font-size: 32px; color: var(--deep-teal); }
+  .hub-card h3 { font-family: "Alfa Slab One"; font-size: 28px; color: var(--deep-teal); }
   .hub-card p { font-size: 22px; color: var(--gray); }
+  .hub-card .tile-cta { font-size: 17px; color: var(--accent); font-weight: 700; margin-top: auto; }
 
   /* ============ QR Placeholder ============ */
   .qr-block {
@@ -619,21 +619,22 @@
   }
   .wing-class-row strong { color: var(--deep-teal); }
 
-  /* Compact card override — Sunday Adult screen (13 cards in 5-col grid) */
-  .compact-cards .card-grid { gap: 12px; flex: 1 1 auto; align-content: stretch; }
+  /* Compact card override — screens with 7+ cards (e.g., Sunday Adult 13 cards).
+     Shrinks proportionally from the standard card while keeping ratios. */
+  .compact-cards .card-grid { gap: 10px; flex: 1 1 auto; align-content: stretch; }
   .compact-cards .card {
     padding: 14px 16px;
-    gap: 6px;
+    gap: 5px;
     border-radius: 10px;
     border-left-width: 4px;
   }
-  .compact-cards .card .room-tag { font-size: 13px; padding: 4px 8px; }
-  .compact-cards .card h4 { font-size: 19px; }
-  .compact-cards .card .desc { font-size: 15px; line-height: 1.35; }
+  .compact-cards .card .room-tag { font-size: 14px; padding: 4px 8px; }
+  .compact-cards .card h4 { font-size: 18px; }
+  .compact-cards .card .desc { font-size: 14px; line-height: 1.3; }
   .compact-cards .card .teachers { font-size: 13px; }
   .compact-cards .card .badge { font-size: 13px; padding: 4px 9px; }
-  .compact-cards .card .schedule-note { font-size: 13px; padding: 5px 9px; }
-  .compact-cards .section-head { margin-bottom: 8px; }
+  .compact-cards .card .schedule-note { font-size: 13px; padding: 4px 8px; }
+  .compact-cards .section-head { margin-bottom: 6px; }
   .compact-cards .section-head h2 { font-size: 28px; }
   .compact-cards .section-head .lede { font-size: 15px; }
 
@@ -973,7 +974,7 @@
       <p class="lede">9:45 AM Bible Class hour · Check in at the Children's Check-in (CC) desk in the lobby.</p>
     </div>
     <div class="screen-body">
-      <div class="hub-grid" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="hub-grid">
         <div class="hub-card" onclick="focusMapRoom('A-Wing-area', '1st')">
           <div class="when">A Wing · Birth–2 Years</div>
           <h3>Toddler Town</h3>
@@ -1383,8 +1384,7 @@ function paginate(containerId, items, perPage, renderFn) {
   function render() {
     const start = page * perPage;
     const slice = items.slice(start, start + perPage);
-    const cols = slice.length === 4 ? 2 : 3;
-    let html = '<div class="card-grid" style="grid-template-columns:repeat(' + cols + ',1fr)">' + slice.map(renderFn).join('') + '</div>';
+    let html = '<div class="card-grid">' + slice.map(renderFn).join('') + '</div>';
     if (total > 1) {
       html += '<div class="paginator">' +
         '<button class="btn secondary" ' + (page === 0 ? 'disabled' : '') +
