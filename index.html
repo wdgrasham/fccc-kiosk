@@ -87,10 +87,11 @@
   @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   .screen-body { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 
-  /* Back/Home controls */
+  /* Back/Home controls — centered */
   .controls {
     display: flex; gap: 12px; margin-bottom: 16px;
     flex: 0 0 auto;
+    justify-content: center;
   }
   .btn {
     font-family: "Open Sans"; font-weight: 600;
@@ -218,22 +219,23 @@
     .tile--overlay .tile-media::before { font-size: 36px; }
   }
 
-  /* ============ SECTION HEADER (sub screens) ============ */
-  .section-head { margin-bottom: 14px; flex: 0 0 auto; }
+  /* ============ SECTION HEADER (sub screens) — centered ============ */
+  .section-head { margin-bottom: 14px; flex: 0 0 auto; text-align: center; }
   .section-head h2 { margin-bottom: 4px; }
-  .section-head .lede { font-size: 15px; color: var(--gray); max-width: 720px; }
+  .section-head .lede { font-size: 15px; color: var(--gray); max-width: 720px; margin: 0 auto; }
 
-  /* ============ CARD GRID (generic) ============ */
+  /* ============ CARD GRID (generic) — fills available space ============ */
   .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 14px;
-    align-content: start;
+    gap: 16px;
+    align-content: stretch;
+    flex: 1 1 auto;
   }
   .card {
     background: #fff;
     border-radius: 12px;
-    padding: 16px 18px;
+    padding: 18px 20px;
     box-shadow: var(--shadow);
     border-left: 6px solid var(--bright-teal);
     display: flex; flex-direction: column; gap: 8px;
@@ -296,24 +298,24 @@
     min-width: 100px; text-align: center;
   }
   .paginator .btn { min-width: 140px; justify-content: center; }
-  .paginated { flex: 1 1 auto; min-height: 0; overflow: hidden; }
+  .paginated { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
 
-  /* ============ CATEGORY HUB (two big buttons for Sunday/Wednesday) ============ */
+  /* ============ CATEGORY HUB — fills available space ============ */
   .hub-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px;
-    max-width: 900px;
-    align-content: start;
+    gap: 20px;
+    align-content: stretch;
+    flex: 1 1 auto;
   }
   .hub-card {
     background: #fff;
     border-radius: 14px;
-    padding: 20px 22px;
+    padding: 24px 26px;
     box-shadow: var(--shadow);
     border: 2px solid transparent;
     cursor: pointer;
-    display: flex; flex-direction: column; gap: 6px;
+    display: flex; flex-direction: column; gap: 8px;
     transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   }
   .hub-card:hover { border-color: var(--bright-aqua); box-shadow: var(--shadow-lg); }
@@ -355,7 +357,8 @@
     display: grid;
     grid-template-columns: 1fr minmax(240px, 280px);
     gap: 28px;
-    align-items: start;
+    align-items: stretch;
+    flex: 1 1 auto;
   }
   @media (max-width: 900px) {
     .info-layout { grid-template-columns: 1fr; }
@@ -1373,9 +1376,9 @@ function paginate(containerId, items, perPage, renderFn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Sunday adult: 11 items; paginate 6 per page (2 pages).
-  paginate('sunday-adult-list', sundayAdult, 6, renderClassCard);
-  // Wednesday adult: 6 items; paginate just in case (fits on one page).
+  // Sunday adult: 11 items; show all on one page to fill the screen.
+  paginate('sunday-adult-list', sundayAdult, 12, renderClassCard);
+  // Wednesday adult: 6 items; show all.
   paginate('wed-adult-list', wednesdayAdult, 6, renderClassCard);
   const care = document.getElementById('sunday-care-list');
   if (care) care.innerHTML = sundayCare.map(renderCareCard).join('');
