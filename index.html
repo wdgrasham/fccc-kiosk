@@ -243,7 +243,7 @@
     transition: transform 0.1s ease, box-shadow 0.15s ease;
     justify-content: center;
     width: 420px;
-    height: 420px;
+    height: var(--card-h, 420px);
   }
   .card:hover { box-shadow: var(--shadow-lg); }
   .card:active { transform: scale(0.99); }
@@ -1051,7 +1051,7 @@
     </div>
   </section>
 
-  <section class="screen" id="screen-classes-wed-adult">
+  <section class="screen" id="screen-classes-wed-adult" style="--card-h:320px;">
     <div class="controls">
       <button class="btn secondary" onclick="goBack()"><span class="arrow">←</span> Back</button>
       <button class="btn ghost" onclick="goHome()">Home</button>
