@@ -227,12 +227,10 @@
   /* ============ CARD GRID — max 3 columns, cards stay square-ish ============ */
   .card-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 1fr;
+    grid-template-columns: repeat(3, auto);
     gap: 20px;
     align-content: center;
-    align-self: center;
-    width: 100%;
+    justify-content: center;
   }
   .card {
     background: #fff;
@@ -244,6 +242,8 @@
     cursor: pointer;
     transition: transform 0.1s ease, box-shadow 0.15s ease;
     justify-content: center;
+    width: 420px;
+    height: 420px;
   }
   .card:hover { box-shadow: var(--shadow-lg); }
   .card:active { transform: scale(0.99); }
@@ -307,12 +307,10 @@
   /* ============ CATEGORY HUB — same grid rules as card-grid ============ */
   .hub-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 1fr;
+    grid-template-columns: repeat(3, auto);
     gap: 20px;
     align-content: center;
-    align-self: center;
-    width: 100%;
+    justify-content: center;
     flex: 1 1 auto;
   }
   .hub-card {
@@ -324,6 +322,8 @@
     cursor: pointer;
     display: flex; flex-direction: column; gap: 12px;
     justify-content: center;
+    width: 420px;
+    height: 420px;
     transition: transform 0.1s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   }
   .hub-card:hover { border-color: var(--bright-aqua); box-shadow: var(--shadow-lg); }
@@ -620,9 +620,11 @@
   .wing-class-row strong { color: var(--deep-teal); }
 
   /* Compact card override — screens with 7+ cards (e.g., Sunday Adult 13 cards).
-     Shrinks proportionally from the standard card while keeping ratios. */
-  .compact-cards .card-grid { gap: 10px; flex: 1 1 auto; align-content: stretch; }
+     Shrinks proportionally from the 420px standard while keeping square-ish. */
+  .compact-cards .card-grid { gap: 10px; flex: 1 1 auto; align-content: center; justify-content: center; }
   .compact-cards .card {
+    width: 240px;
+    height: 240px;
     padding: 14px 16px;
     gap: 5px;
     border-radius: 10px;
@@ -737,7 +739,7 @@
       <p class="lede">We're so glad you stopped by. Here's how to take your first steps.</p>
     </div>
 
-    <div class="card-grid" style="grid-template-columns: repeat(2, 1fr);">
+    <div class="card-grid" style="grid-template-columns: repeat(2, auto);">
       <div class="card" onclick="go('new-here-start')">
         <h4>Start Here</h4>
         <div class="desc">Visit the Start Here room or fill out a Start Here Card and someone from our team will follow up.</div>
@@ -1097,7 +1099,7 @@
       <h2>Wednesday · Student Ministry</h2>
     </div>
     <div style="flex:1 1 auto; display:flex; align-items:center; justify-content:center;">
-      <div class="card" onclick="focusMapRoom('The Gym','1st')" style="max-width:420px; width:100%; aspect-ratio:1; justify-content:center; text-align:center; border-left:none; border:2px solid transparent; cursor:pointer;">
+      <div class="card" onclick="focusMapRoom('The Gym','1st')" style="text-align:center; border-left:none; border:2px solid transparent;">
         <span class="room-tag" style="align-self:center;">The Gym</span>
         <h4>Student Ministry</h4>
         <div class="desc">Grades 6–12</div>
