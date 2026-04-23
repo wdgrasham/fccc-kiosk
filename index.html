@@ -472,7 +472,7 @@
     pointer-events: none;
     z-index: 3;
   }
-  /* "YOU ARE HERE" label sits ABOVE the K circle. */
+  /* "YOU ARE HERE" label sits BELOW the K circle. */
   .you-here__label {
     background: #fff;
     color: var(--accent-red);
@@ -1132,11 +1132,11 @@
           <img class="map-layer map-layer--1st" src="map-1st.png" alt="First Colony 1st floor map"/>
           <img class="map-layer map-layer--2nd" src="map-2nd.png" alt="First Colony 2nd floor overlay"/>
 
-          <!-- Lobby kiosk You Are Here: pixel (2300, 3000) in 5234x3900 image
-               = 43.9% left, 76.9% top. positionYouAreHere() writes these. -->
+          <!-- Lobby kiosk You Are Here: pixel (2382, 2710) in 5234x3900 image
+               = 45.5% left, 69.5% top. positionYouAreHere() writes these. -->
           <div class="you-here" id="youHere">
-            <div class="you-here__label">YOU ARE HERE</div>
             <div class="you-here__dot">K</div>
+            <div class="you-here__label">YOU ARE HERE</div>
           </div>
         </div>
 
@@ -1405,7 +1405,7 @@ function positionYouAreHere() {
   if (KIOSK_LOCATION === 'childrens-wing') {
     px = 3000; py = 1600;   // placeholder — tune to A/B corridor spot
   } else {
-    px = 2350; py = 3050;   // Lobby kiosk — south main entrance (44.9% / 78.2%)
+    px = 2382; py = 2710;   // Lobby kiosk — south main entrance (45.5% / 69.5%)
   }
   el.style.left = (px / IMG_W * 100).toFixed(3) + '%';
   el.style.top  = (py / IMG_H * 100).toFixed(3) + '%';
@@ -1538,7 +1538,7 @@ const rooms = [
     sunday: [{ name: 'Chapel Class', meta: 'Traditional verse-by-verse Bible study' }] },
   { id: 'The Gym', floor: '1st', ...px(1477,2946,350),
     wednesday: [{ name: 'Student Ministry', meta: '6th–12th grade', time: '6:45 PM' }] },
-  { id: 'The Lobby', floor: '1st', ...px(2520,2550,400) },
+  { id: 'The Lobby', floor: '1st', ...px(2565,2252,400) },
   { id: 'Living Room', floor: '1st', ...px(3110,1745,250),
     sunday: [{ name: 'Deaf Fellowship', meta: 'ASL only, all ages' }],
     wednesday: [{ name: 'FriendSpeak ESL', meta: 'English as a Second Language' }] },
