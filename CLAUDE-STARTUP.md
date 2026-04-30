@@ -220,6 +220,13 @@ the one taking the wayfinding photos and coordinating with church staff (the
 This file was last updated: 2026-04-29
 Updated by: Bob (Claude Code)
 
+**Apr 29 (later):** Conference Room marker moved to (1900, 2372). Women's
+Bible Group description expanded. Added a generic `series` field to class
+data (Families Class now shows "Currently studying: The Fruit of the
+Spirit") and a `seriesByMonth` field for auto-rotating titles (International
+Fellowship Gospel Project — May/June/July themed). Append numeric keys
+to seriesByMonth to add future months; no code change needed.
+
 **Apr 29:** Three content updates — Student Ministry teacher line trimmed
 to Nathanial Matis only and a 270px Linktree QR added; "Wednesday Night
 Lights" renamed to "Children's Wednesday Night Lights" in 4 places; all

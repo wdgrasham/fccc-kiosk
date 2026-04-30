@@ -1301,7 +1301,14 @@ const sundayAdult = [
   { name: 'Families Class', room: 'F-102', roomId: 'F102', floor: '1st', teachers: 'Kristin & Brett Rovey', desc: 'Intergenerational — children welcome.', series: 'Currently studying: The Fruit of the Spirit' },
   { name: "Women's Bible Group", room: 'F-106', roomId: 'F106', floor: '1st', teachers: 'Missy Edgmon', desc: 'Walking through every book of the Bible — a deep dive with study and conversation. Married or single ladies of any age.' },
   { name: 'Chinese Bible Class', room: 'F-107', roomId: 'F107', floor: '1st', teachers: 'Greg Hoogerwerf, Sarah Smith', desc: 'Mandarin & English, all ages.' },
-  { name: 'International Fellowship', room: 'F-108', roomId: 'F108', floor: '1st', teachers: 'Steve Phillips, Doug Calvin', desc: 'ESL Bible study, taught in English.' },
+  { name: 'International Fellowship', room: 'F-108', roomId: 'F108', floor: '1st', teachers: 'Steve Phillips, Doug Calvin',
+    desc: 'Gospel Project: a study through the Bible. ESL, taught in English.',
+    // To add Aug+, append numeric keys (8, 9, etc.) with the title string. No other code change needed.
+    seriesByMonth: {
+      5: 'May: The Foolishness of God’s People (1 Samuel)',
+      6: 'June: Everything Belongs to the Lord (1 Samuel)',
+      7: 'July: The Need for Wisdom (1 Kings, Eccl., Proverbs)'
+    } },
   { name: 'Young Adults (20s & 30s)', room: 'F-111', roomId: 'F111', floor: '1st', teachers: 'Gordon & Gretchen Ware, Nathan & Heather Lynch, Wade & Wendi Holmes', desc: 'Singles in their 20s and 30s.' },
   { name: 'Horizons', room: 'F-112', roomId: 'F112', floor: '1st', teachers: 'Kyler Cole, Don Payne, John Ricks, Mauricio Villegas', desc: 'Singles or married, all ages.' },
   { name: 'Chapel Class', room: 'The Chapel', roomId: 'Chapel', floor: '1st', teachers: 'Rodney Howald, Kim Brigham, Harold Eye', desc: '50s and above, variety of formats.' },
@@ -1347,7 +1354,11 @@ function renderClassCard(c) {
     : c.roomId ? "focusMapRoom('" + c.roomId + "','" + (c.floor || '1st') + "')"
     : "focusRoom('" + c.wing + "')";
   const cta = c.detailScreen ? '<div class="teachers">Tap for times &amp; signup →</div>' : '';
-  const seriesText = c.series || '';
+  // Prefer the monthly-rotating title when one is set for this month, else fall back to the static series.
+  // Recomputed on every render, so the kiosk flips correctly across midnight on the 1st.
+  const currentMonth = new Date().getMonth() + 1;
+  const monthlyTitle = c.seriesByMonth && c.seriesByMonth[currentMonth];
+  const seriesText = monthlyTitle || c.series || '';
   const seriesLine = seriesText ? '<div class="series">' + seriesText + '</div>' : '';
   return '<div class="' + klass + '" onclick="' + click + '">' +
     badge +
