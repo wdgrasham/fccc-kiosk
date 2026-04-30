@@ -260,6 +260,7 @@
   .card h4 { color: var(--deep-teal); font-size: 28px; }
   .card .desc { font-size: 22px; color: #3c4a50; line-height: 1.4; }
   .card .teachers { font-size: 19px; color: var(--gray); font-style: italic; }
+  .card .series { font-size: 19px; color: var(--classic-teal); font-style: italic; }
   .card .badge {
     align-self: flex-start; font-size: 18px; font-weight: 700; letter-spacing: 0.5px;
     text-transform: uppercase; padding: 6px 14px; border-radius: 999px;
@@ -635,6 +636,7 @@
   .compact-cards .card h4 { font-size: 18px; }
   .compact-cards .card .desc { font-size: 14px; line-height: 1.3; }
   .compact-cards .card .teachers { font-size: 13px; }
+  .compact-cards .card .series { font-size: 13px; }
   .compact-cards .card .badge { font-size: 13px; padding: 4px 9px; }
   .compact-cards .card .schedule-note { font-size: 13px; padding: 4px 8px; }
   .compact-cards .section-head { margin-bottom: 6px; }
@@ -1296,7 +1298,7 @@ document.getElementById('dayLabel').textContent = currentDay() + ' · ' + new Da
 /* ----- Class data (from KIOSK-REDESIGN-PLAN.md) ----- */
 const sundayAdult = [
   { name: 'Connected Class', room: 'F-100', roomId: 'F100', floor: '1st', teachers: 'Scott Opaleski, Andy Pace, Drew Dasher', desc: 'Young adults, single or married, with or without kids.' },
-  { name: 'Families Class', room: 'F-102', roomId: 'F102', floor: '1st', teachers: 'Kristin & Brett Rovey', desc: 'Intergenerational — children welcome.' },
+  { name: 'Families Class', room: 'F-102', roomId: 'F102', floor: '1st', teachers: 'Kristin & Brett Rovey', desc: 'Intergenerational — children welcome.', series: 'Currently studying: The Fruit of the Spirit' },
   { name: "Women's Bible Group", room: 'F-106', roomId: 'F106', floor: '1st', teachers: 'Missy Edgmon', desc: 'Walking through every book of the Bible — a deep dive with study and conversation. Married or single ladies of any age.' },
   { name: 'Chinese Bible Class', room: 'F-107', roomId: 'F107', floor: '1st', teachers: 'Greg Hoogerwerf, Sarah Smith', desc: 'Mandarin & English, all ages.' },
   { name: 'International Fellowship', room: 'F-108', roomId: 'F108', floor: '1st', teachers: 'Steve Phillips, Doug Calvin', desc: 'ESL Bible study, taught in English.' },
@@ -1345,11 +1347,14 @@ function renderClassCard(c) {
     : c.roomId ? "focusMapRoom('" + c.roomId + "','" + (c.floor || '1st') + "')"
     : "focusRoom('" + c.wing + "')";
   const cta = c.detailScreen ? '<div class="teachers">Tap for times &amp; signup →</div>' : '';
+  const seriesText = c.series || '';
+  const seriesLine = seriesText ? '<div class="series">' + seriesText + '</div>' : '';
   return '<div class="' + klass + '" onclick="' + click + '">' +
     badge +
     '<span class="room-tag">' + c.room + '</span>' +
     '<h4>' + c.name + '</h4>' +
     (c.desc ? '<div class="desc">' + c.desc + '</div>' : '') +
+    seriesLine +
     extras +
     '<div class="teachers">' + c.teachers + '</div>' +
     cta +
