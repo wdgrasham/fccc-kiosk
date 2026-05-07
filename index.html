@@ -1570,6 +1570,71 @@ function renderCareCard(c) {
     '</div>';
 }
 
+/* ----- Upcoming Events (May–June 2026) -----
+   Replace this whole array when the church publishes a new promo
+   calendar. Each entry: { date, title, desc, meta, icon }.
+   `icon` keys are: popcorn, bottle, heart, sun, trees, people,
+                    ark, family, handshake, sunset-hands.
+   Add new icon keys in getEventIcon() if needed. */
+const events = [
+  { date: 'MAY 1', title: 'Movie Under The Moon',
+    desc: 'Outdoor movie night and outreach event at Sugar Land Town Square.',
+    meta: '5:30pm • Outreach', icon: 'popcorn' },
+  { date: 'MAY (ALL MONTH)', title: 'Baby Bottle Blessing',
+    desc: 'Support the Pregnancy Resource Medical Center.',
+    meta: 'Sunday Mornings • Outreach', icon: 'bottle' },
+  { date: 'MAY 10', title: 'Baby Dedication',
+    desc: 'Celebrate and commit to raising your child in faith.',
+    meta: 'During Worship Services • Children’s Ministry', icon: 'heart' },
+  { date: 'MAY 22', title: 'SMFC Summer Kickoff',
+    desc: 'Kick off summer with a pool party full of games, fun, and connection.',
+    meta: '8:00pm • Student Ministry', icon: 'sun' },
+  { date: 'MAY 29 – JUNE 1', title: 'Camp Eagle',
+    desc: 'An adventure camp helping students grow in their faith.',
+    meta: 'Overnight Camp • Student Ministry', icon: 'trees' },
+  { date: 'MAY 31', title: 'New Member Info Session',
+    desc: 'Learn more about First Colony and get connected.',
+    meta: '9:45am • Start Here Room', icon: 'people' },
+  { date: 'JUNE 8 – 10', title: 'VBS',
+    desc: 'A fun, faith-filled experience for kids ages 4 – 5th grade.',
+    meta: '9:00 – 11:45am • Children’s Ministry', icon: 'ark' },
+  { date: 'JUNE 10', title: 'Fam Blitz',
+    desc: 'A fun, high-energy event where families play, interact, and grow together.',
+    meta: '6:30pm • Children’s Ministry', icon: 'family' },
+  { date: 'JUNE 15 – 17', title: 'GO Week',
+    desc: 'A 3-day experience where students serve and discover their gifts.',
+    meta: 'Outreach • Student Ministry', icon: 'handshake' },
+  { date: 'JUNE 28 – JULY 3', title: 'Galveston Urban Ministries',
+    desc: 'Serve, build relationships, and make an impact in the Galveston community.',
+    meta: 'Missions • Student Ministry', icon: 'sunset-hands' }
+];
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}
+
+function renderEventCard(e) {
+  return '<div class="event-card">' +
+    '<div class="event-card__row">' +
+      '<div class="event-card__date-pill">' + escapeHtml(e.date) + '</div>' +
+      '<div class="event-card__icon">' + getEventIcon(e.icon) + '</div>' +
+    '</div>' +
+    '<h3 class="event-card__title">' + escapeHtml(e.title) + '</h3>' +
+    '<p class="event-card__desc">' + escapeHtml(e.desc) + '</p>' +
+    '<div class="event-card__meta">' + escapeHtml(e.meta) + '</div>' +
+  '</div>';
+}
+
+/* Stub — real SVG bodies are added in the next commit. Returns an
+   empty <svg> placeholder so layout doesn't shift. */
+function getEventIcon(name) {
+  return '<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">' +
+    '<circle cx="40" cy="40" r="38" fill="#008c95"/>' +
+    '</svg>';
+}
+
 /* ----- Paginator -----
    Renders `items` into `containerId` as a grid, paginated at `perPage`.
    If items.length <= perPage no controls are drawn.
@@ -1613,6 +1678,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (sunAll) sunAll.innerHTML = sundayAdult.map(renderClassCard).join('') + sundayCare.map(renderCareCard).join('');
   // Wednesday adult: 6 items; show all.
   paginate('wed-adult-list', wednesdayAdult, 6, renderClassCard);
+  // Upcoming Events: 10 items, 6 per page → page 1 of 2 has 6 cards,
+  // page 2 has 4. Pass the .events-grid class so the helper wraps cards
+  // in the events 2-column grid instead of the standard .card-grid.
+  paginate('events-list', events, 6, renderEventCard, 'events-grid');
 
   // Set You-Are-Here marker based on KIOSK_LOCATION
   positionYouAreHere();
