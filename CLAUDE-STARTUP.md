@@ -217,8 +217,19 @@ the one taking the wayfinding photos and coordinating with church staff (the
 
 ## LAST UPDATED
 
-This file was last updated: 2026-04-29
+This file was last updated: 2026-05-06
 Updated by: Bob (Claude Code)
+
+**May 6:** Built the Upcoming Events page (5 commits). Home now has a
+fifth wide tile beneath the 4-tile grid that opens a new paginated
+events screen — 10 events from the May/June 2026 promo calendar, 6
+per page, 2 columns. The banner header and all 10 event icons are
+recreated as native HTML/CSS and inline SVG (NOT extracted from the
+PDF) so they stay sharp at any kiosk size. Footer has a calendar
+icon, "View the full calendar" line, and a QR pointing to
+firstcolonychurch.org/events. The events array near the other class
+data is hardcoded — replace it when the church publishes a new promo
+calendar (about every 1-2 months); no other code change needed.
 
 **Apr 29 (later):** Conference Room marker moved to (1900, 2372). Women's
 Bible Group description expanded. Added a generic `series` field to class
