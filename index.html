@@ -136,13 +136,13 @@
   }
 
   /* Wide "Upcoming Events" banner that sits beneath the 4-tile home grid.
-     Layout: [large calendar icon] [centered title block] [View Events CTA] */
+     Layout: [centered title block] [View Events CTA on right] */
   .home-banner {
     background: #fff;
     border-radius: var(--card-radius);
     box-shadow: var(--shadow);
     border-left: 6px solid var(--bright-teal);
-    padding: 18px 36px;
+    padding: 22px 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -155,12 +155,6 @@
   }
   .home-banner:hover { box-shadow: var(--shadow-lg); }
   .home-banner:active { transform: scale(0.99); }
-  .home-banner__icon {
-    flex: 0 0 auto;
-    width: 140px;
-    height: 140px;
-  }
-  .home-banner__icon img { width: 100%; height: 100%; display: block; }
   .home-banner__text {
     display: flex;
     flex-direction: column;
@@ -474,18 +468,21 @@
     border-left: 6px solid var(--bright-teal);
     padding: 14px 20px;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
     cursor: default;
     min-height: 0;
   }
-  .event-card__row {
+  .event-card__body {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    flex: 1 1 auto;
   }
   .event-card__date-pill {
+    align-self: flex-start;
     background: var(--bright-teal);
     color: #fff;
     font: 700 14px "Open Sans";
@@ -495,8 +492,8 @@
     text-transform: uppercase;
     white-space: nowrap;
   }
-  .event-card__icon { width: 60px; height: 60px; flex: 0 0 auto; }
-  .event-card__icon svg, .event-card__icon img { width: 100%; height: 100%; display: block; }
+  .event-card__icon { width: 140px; height: 140px; flex: 0 0 auto; }
+  .event-card__icon img { width: 100%; height: 100%; display: block; }
   .event-card__title {
     font-family: "Alfa Slab One", Georgia, serif;
     font-size: 22px;
@@ -536,9 +533,9 @@
     padding-top: 12px;
     border-top: 1px solid #e5e7eb;
   }
-  .events-footer__lead { display: flex; align-items: center; gap: 16px; }
-  .events-footer__icon { width: 48px; height: 48px; flex: 0 0 auto; }
-  .events-footer__icon svg, .events-footer__icon img { width: 100%; height: 100%; display: block; }
+  .events-footer__lead { display: flex; align-items: center; gap: 18px; }
+  .events-footer__icon { width: 140px; height: 140px; flex: 0 0 auto; }
+  .events-footer__icon img { width: 100%; height: 100%; display: block; }
   .events-footer__text { display: flex; flex-direction: column; }
   .events-footer__eyebrow {
     font: 600 13px "Open Sans";
@@ -902,9 +899,6 @@
       </div>
     </div>
     <div class="home-banner" onclick="go('events')">
-      <div class="home-banner__icon">
-        <img src="assets/images/events/Calendar.png" alt="" />
-      </div>
       <div class="home-banner__text">
         <div class="home-banner__eyebrow">— MAY – JUNE 2026 —</div>
         <h2 class="home-banner__title">UPCOMING EVENTS</h2>
@@ -937,6 +931,7 @@
     </div>
     <div class="screen-body paginated" id="events-list"></div>
     <div class="events-footer">
+      <div class="events-footer__qr qr-code" data-qr="https://firstcolonychurch.org/events"></div>
       <div class="events-footer__lead">
         <div class="events-footer__icon"><img src="assets/images/events/Calendar.png" alt="" /></div>
         <div class="events-footer__text">
@@ -944,7 +939,6 @@
           <div class="events-footer__url">firstcolonychurch.org/events</div>
         </div>
       </div>
-      <div class="events-footer__qr qr-code" data-qr="https://firstcolonychurch.org/events"></div>
     </div>
   </section>
 
@@ -1646,13 +1640,13 @@ function escapeHtml(s) {
 
 function renderEventCard(e) {
   return '<div class="event-card">' +
-    '<div class="event-card__row">' +
+    '<div class="event-card__icon">' + getEventIcon(e.icon) + '</div>' +
+    '<div class="event-card__body">' +
       '<div class="event-card__date-pill">' + escapeHtml(e.date) + '</div>' +
-      '<div class="event-card__icon">' + getEventIcon(e.icon) + '</div>' +
+      '<h3 class="event-card__title">' + escapeHtml(e.title) + '</h3>' +
+      '<p class="event-card__desc">' + escapeHtml(e.desc) + '</p>' +
+      '<div class="event-card__meta">' + escapeHtml(e.meta) + '</div>' +
     '</div>' +
-    '<h3 class="event-card__title">' + escapeHtml(e.title) + '</h3>' +
-    '<p class="event-card__desc">' + escapeHtml(e.desc) + '</p>' +
-    '<div class="event-card__meta">' + escapeHtml(e.meta) + '</div>' +
   '</div>';
 }
 
