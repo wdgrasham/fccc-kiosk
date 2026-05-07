@@ -1627,12 +1627,123 @@ function renderEventCard(e) {
   '</div>';
 }
 
-/* Stub — real SVG bodies are added in the next commit. Returns an
-   empty <svg> placeholder so layout doesn't shift. */
+/* ----- Inline SVG icons for Upcoming Events -----
+   Every icon is an 80x80 SVG: a teal-filled circle with simple white
+   line-art on top, matching the visual language of the printed promo
+   calendar. Recreated by hand — NOT extracted from the PDF — so they
+   stay sharp at any kiosk resolution.
+   To add a new icon, add a case to the switch and reference its key
+   from the events array. */
 function getEventIcon(name) {
+  const wrap = (inner) =>
+    '<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">' +
+      '<circle cx="40" cy="40" r="38" fill="#008c95"/>' +
+      '<g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
+        inner +
+      '</g>' +
+    '</svg>';
+  switch (name) {
+    case 'popcorn':
+      return wrap(
+        '<path d="M 28 42 L 24 64 L 56 64 L 52 42 Z"/>' +
+        '<line x1="36" y1="42" x2="36" y2="64"/>' +
+        '<line x1="44" y1="42" x2="44" y2="64"/>' +
+        '<circle cx="32" cy="34" r="4" fill="#fff" stroke="none"/>' +
+        '<circle cx="40" cy="28" r="4.5" fill="#fff" stroke="none"/>' +
+        '<circle cx="48" cy="34" r="4" fill="#fff" stroke="none"/>'
+      );
+    case 'bottle':
+      return wrap(
+        '<path d="M 32 18 H 48 V 26 L 50 28 V 60 Q 50 64 46 64 H 34 Q 30 64 30 60 V 28 L 32 26 Z"/>' +
+        '<line x1="32" y1="48" x2="48" y2="48"/>'
+      );
+    case 'heart':
+      return wrap(
+        '<path d="M 40 60 C 40 60 22 48 22 36 C 22 28 28 22 34 22 C 37 22 40 24 40 28 C 40 24 43 22 46 22 C 52 22 58 28 58 36 C 58 48 40 60 40 60 Z"/>'
+      );
+    case 'sun':
+      return wrap(
+        '<circle cx="40" cy="40" r="10"/>' +
+        '<line x1="40" y1="18" x2="40" y2="22"/>' +
+        '<line x1="40" y1="58" x2="40" y2="62"/>' +
+        '<line x1="18" y1="40" x2="22" y2="40"/>' +
+        '<line x1="58" y1="40" x2="62" y2="40"/>' +
+        '<line x1="24" y1="24" x2="27" y2="27"/>' +
+        '<line x1="56" y1="24" x2="53" y2="27"/>' +
+        '<line x1="24" y1="56" x2="27" y2="53"/>' +
+        '<line x1="56" y1="56" x2="53" y2="53"/>'
+      );
+    case 'trees':
+      return wrap(
+        '<polygon points="18,54 30,54 24,32"/>' +
+        '<rect x="22" y="54" width="4" height="8"/>' +
+        '<polygon points="38,60 62,60 50,26"/>' +
+        '<rect x="48" y="60" width="4" height="8"/>'
+      );
+    case 'people':
+      return wrap(
+        '<circle cx="24" cy="30" r="6"/>' +
+        '<path d="M 12 50 Q 24 38 36 50"/>' +
+        '<circle cx="40" cy="26" r="6.5"/>' +
+        '<path d="M 26 48 Q 40 34 54 48"/>' +
+        '<circle cx="56" cy="30" r="6"/>' +
+        '<path d="M 44 50 Q 56 38 68 50"/>'
+      );
+    case 'ark':
+      return wrap(
+        '<path d="M 14 42 L 66 42 L 60 56 L 20 56 Z"/>' +
+        '<rect x="32" y="26" width="16" height="16"/>' +
+        '<line x1="40" y1="20" x2="40" y2="26"/>' +
+        '<path d="M 14 66 Q 22 62 30 66 Q 38 70 46 66 Q 54 62 62 66"/>'
+      );
+    case 'family':
+      return wrap(
+        '<circle cx="22" cy="28" r="6"/>' +
+        '<path d="M 12 52 Q 22 40 32 52"/>' +
+        '<circle cx="58" cy="28" r="6"/>' +
+        '<path d="M 48 52 Q 58 40 68 52"/>' +
+        '<circle cx="40" cy="38" r="5"/>' +
+        '<path d="M 33 56 Q 40 46 47 56"/>'
+      );
+    case 'handshake':
+      return wrap(
+        '<path d="M 14 50 H 28 L 36 42"/>' +
+        '<path d="M 66 50 H 52 L 44 42"/>' +
+        '<ellipse cx="40" cy="42" rx="8" ry="5"/>'
+      );
+    case 'sunset-hands':
+      return wrap(
+        '<line x1="14" y1="56" x2="66" y2="56"/>' +
+        '<path d="M 28 56 A 12 12 0 0 1 52 56"/>' +
+        '<line x1="40" y1="32" x2="40" y2="36"/>' +
+        '<line x1="30" y1="40" x2="32" y2="42"/>' +
+        '<line x1="50" y1="40" x2="48" y2="42"/>' +
+        '<path d="M 14 70 V 52 Q 14 46 19 46 Q 24 46 24 52 V 70 Z" fill="#fff" stroke="none"/>' +
+        '<path d="M 66 70 V 52 Q 66 46 61 46 Q 56 46 56 52 V 70 Z" fill="#fff" stroke="none"/>'
+      );
+    default:
+      return wrap('');
+  }
+}
+
+/* Calendar icon used in the events page footer ("View the full
+   calendar"). Same teal-circle treatment as the event-card icons so
+   it reads as part of the same family. */
+function getCalendarIcon() {
   return '<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">' +
     '<circle cx="40" cy="40" r="38" fill="#008c95"/>' +
-    '</svg>';
+    '<g fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' +
+      '<rect x="16" y="22" width="48" height="42" rx="3"/>' +
+      '<line x1="16" y1="34" x2="64" y2="34"/>' +
+      '<line x1="26" y1="16" x2="26" y2="26"/>' +
+      '<line x1="54" y1="16" x2="54" y2="26"/>' +
+      '<rect x="24" y="42" width="6" height="6"/>' +
+      '<rect x="36" y="42" width="6" height="6"/>' +
+      '<rect x="48" y="42" width="6" height="6"/>' +
+      '<rect x="24" y="52" width="6" height="6"/>' +
+      '<rect x="36" y="52" width="6" height="6"/>' +
+    '</g>' +
+  '</svg>';
 }
 
 /* ----- Paginator -----
@@ -1682,6 +1793,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // page 2 has 4. Pass the .events-grid class so the helper wraps cards
   // in the events 2-column grid instead of the standard .card-grid.
   paginate('events-list', events, 6, renderEventCard, 'events-grid');
+  const footerIcon = document.getElementById('eventsFooterIcon');
+  if (footerIcon) footerIcon.innerHTML = getCalendarIcon();
 
   // Set You-Are-Here marker based on KIOSK_LOCATION
   positionYouAreHere();
