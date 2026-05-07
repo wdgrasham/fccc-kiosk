@@ -115,15 +115,73 @@
   .btn .arrow { font-size: 20px; line-height: 1; }
 
   /* ============ HOME SCREEN ============ */
-  #screen-home { justify-content: flex-start; align-items: center; padding: 16px 32px; }
+  #screen-home { justify-content: flex-start; align-items: center; padding: 12px 32px 16px; }
   .hero {
     text-align: center;
     margin-bottom: 0;
     flex: 0 0 auto;
   }
-  .hero .welcome { font-family: "Alfa Slab One"; font-size: 44px; color: var(--deep-teal); line-height: 1; }
+  .hero .welcome { font-family: "Alfa Slab One"; font-size: 40px; color: var(--deep-teal); line-height: 1; }
   .hero .welcome .accent { color: var(--bright-teal); }
-  .hero .sub { margin-top: 8px; font-size: 17px; color: var(--classic-teal); font-weight: 400; letter-spacing: 0.5px; }
+  .hero .sub { margin-top: 6px; font-size: 16px; color: var(--classic-teal); font-weight: 400; letter-spacing: 0.5px; }
+
+  /* Home stack — tiles up top, wide Upcoming Events banner below. */
+  .home-stack {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-top: 14px;
+  }
+
+  /* Wide "Upcoming Events" banner that sits beneath the 4-tile home grid.
+     Recreates the printed promo-calendar header in plain HTML/CSS so it
+     stays sharp at any kiosk resolution. */
+  .home-banner {
+    background: #fff;
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow);
+    border-left: 6px solid var(--bright-teal);
+    padding: 24px 36px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    margin: 18px auto 0;
+    max-width: 1480px;
+    width: 100%;
+    transition: transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .home-banner:hover { box-shadow: var(--shadow-lg); }
+  .home-banner:active { transform: scale(0.99); }
+  .home-banner__text { display: flex; flex-direction: column; }
+  .home-banner__eyebrow {
+    font: 600 16px "Open Sans";
+    color: var(--bright-teal);
+    letter-spacing: 4px;
+    margin-bottom: 6px;
+  }
+  .home-banner__title {
+    font-family: "Alfa Slab One", Georgia, serif;
+    font-size: 56px;
+    color: var(--deep-teal);
+    letter-spacing: 1px;
+    line-height: 1;
+  }
+  .home-banner__sub {
+    font: 600 18px "Open Sans";
+    color: var(--classic-teal);
+    letter-spacing: 3px;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+  .home-banner__cta { align-self: center; font-size: 22px; }
+  /* Compact variant of the banner used at the top of the events screen. */
+  .home-banner.home-banner--compact { padding: 18px 32px; margin-top: 0; }
+  .home-banner--compact .home-banner__title { font-size: 40px; }
+  .home-banner--compact .home-banner__eyebrow { font-size: 14px; letter-spacing: 3px; }
+  .home-banner--compact .home-banner__sub { font-size: 15px; letter-spacing: 2.5px; margin-top: 8px; }
 
   /* Home tiles = event-card pattern from firstcolonychurch.org.
      Photo at top, optional pill badge overlay, body with title/desc/CTA. */
@@ -684,7 +742,7 @@
       <div class="welcome">Welcome to <span class="accent">First Colony</span></div>
       <div class="sub">Tap a card below to explore</div>
     </div>
-    <div style="flex:1 1 auto; display:flex; align-items:center;">
+    <div class="home-stack">
     <div class="home-grid">
       <div class="tile tile--overlay" onclick="go('new-here')">
         <div class="tile-media">
@@ -726,6 +784,16 @@
           <div class="tile-desc">Jump in, explore opportunities, or take the Spiritual Assessment.</div>
           <span class="tile-cta">Learn More <span class="arrow">&rarr;</span></span>
         </div>
+      </div>
+    </div>
+    <div class="home-banner" onclick="go('events')">
+      <div class="home-banner__text">
+        <div class="home-banner__eyebrow">— MAY – JUNE 2026 —</div>
+        <h2 class="home-banner__title">UPCOMING EVENTS</h2>
+        <div class="home-banner__sub">WHAT'S HAPPENING AT FIRST COLONY</div>
+      </div>
+      <div class="home-banner__cta">
+        <span class="tile-cta">View Events <span class="arrow">&rarr;</span></span>
       </div>
     </div>
     </div>
